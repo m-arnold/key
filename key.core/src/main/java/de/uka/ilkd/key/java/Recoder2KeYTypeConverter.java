@@ -393,7 +393,7 @@ public class Recoder2KeYTypeConverter {
 
         FieldSpecification specLength =
             new FieldSpecification(new LocationVariable(new ProgramElementName("length"),
-                integerType, superArrayType, false, false, false, true));
+                integerType, superArrayType, false, false, false, true, false));
         FieldDeclaration f = new FieldDeclaration(new Modifier[] { new Public(), new Final() },
             new TypeRef(integerType), new FieldSpecification[] { specLength }, false);
         superArrayType.setJavaType(new SuperArrayDeclaration(f));

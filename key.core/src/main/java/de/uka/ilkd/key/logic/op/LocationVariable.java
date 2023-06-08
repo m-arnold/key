@@ -19,18 +19,18 @@ import org.key_project.util.EqualsModProofIrrelevancy;
 public final class LocationVariable extends ProgramVariable implements UpdateableOperator,
         EqualsModProofIrrelevancy {
     public LocationVariable(ProgramElementName name, KeYJavaType t, KeYJavaType containingType,
-            boolean isStatic, boolean isModel, boolean isGhost, boolean isFinal) {
-        super(name, t.getSort(), t, containingType, isStatic, isModel, isGhost, isFinal);
+            boolean isStatic, boolean isModel, boolean isGhost, boolean isFinal, boolean isImmutable) {
+        super(name, t.getSort(), t, containingType, isStatic, isModel, isGhost, isFinal, isImmutable);
     }
 
     public LocationVariable(ProgramElementName name, KeYJavaType t, KeYJavaType containingType,
             boolean isStatic, boolean isModel) {
-        super(name, t.getSort(), t, containingType, isStatic, isModel, false);
+        super(name, t.getSort(), t, containingType, isStatic, isModel, false, false);
     }
 
 
     public LocationVariable(ProgramElementName name, KeYJavaType t) {
-        super(name, t.getSort(), t, null, false, false, false);
+        super(name, t.getSort(), t, null, false, false, false, false);
     }
 
 
@@ -45,7 +45,7 @@ public final class LocationVariable extends ProgramVariable implements Updateabl
 
 
     public LocationVariable(ProgramElementName name, Sort s) {
-        super(name, s, null, null, false, false, false);
+        super(name, s, null, null, false, false, false, false);
     }
 
     @Override

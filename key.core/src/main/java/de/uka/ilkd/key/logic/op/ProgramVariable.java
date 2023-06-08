@@ -43,6 +43,7 @@ public abstract class ProgramVariable extends AbstractSortedOperator
     private final boolean isModel;
     private final boolean isGhost;
     private final boolean isFinal;
+    private final boolean isImmutable;
 
     // the type where this program variable is declared if and only if
     // the program variable denotes a field
@@ -50,7 +51,7 @@ public abstract class ProgramVariable extends AbstractSortedOperator
 
     protected ProgramVariable(ProgramElementName name, Sort s, KeYJavaType t,
             KeYJavaType containingType, boolean isStatic, boolean isModel, boolean isGhost,
-            boolean isFinal) {
+            boolean isFinal, boolean isImmutable) {
         super(name, s == null ? t.getSort() : s, false);
         this.type = t;
         this.containingType = containingType;
@@ -59,6 +60,7 @@ public abstract class ProgramVariable extends AbstractSortedOperator
         this.isGhost = isGhost;
         assert !(isModel && isGhost) : "Program variable cannot be model and ghost";
         this.isFinal = isFinal;
+        this.isImmutable = isImmutable;
 
         assert sort() != Sort.FORMULA;
         assert sort() != Sort.UPDATE;
@@ -66,8 +68,8 @@ public abstract class ProgramVariable extends AbstractSortedOperator
 
 
     protected ProgramVariable(ProgramElementName name, Sort s, KeYJavaType t,
-            KeYJavaType containingType, boolean isStatic, boolean isModel, boolean isGhost) {
-        this(name, s, t, containingType, isStatic, isModel, isGhost, false);
+            KeYJavaType containingType, boolean isStatic, boolean isModel, boolean isGhost, boolean isImmutable) {
+        this(name, s, t, containingType, isStatic, isModel, isGhost, false, isImmutable);
     }
 
 
@@ -106,6 +108,8 @@ public abstract class ProgramVariable extends AbstractSortedOperator
     public boolean isFinal() {
         return isFinal;
     }
+
+    public boolean isImmutable() { return isImmutable; }
 
 
     /**

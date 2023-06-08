@@ -20,7 +20,7 @@ public final class ProgramConstant extends ProgramVariable {
 
     public ProgramConstant(ProgramElementName name, KeYJavaType t, KeYJavaType containingType,
             boolean isStatic, Literal compileTimeConstant) {
-        super(name, t.getSort(), t, containingType, isStatic, false, false);
+        super(name, t.getSort(), t, containingType, isStatic, false, false, false);
         this.compileTimeConstant = compileTimeConstant;
     }
 

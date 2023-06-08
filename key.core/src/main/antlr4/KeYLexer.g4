@@ -139,6 +139,7 @@ ISREFERENCE:'\\isReference';
 ISREFERENCEARRAY:'\\isReferenceArray';
 ISSTATICFIELD : '\\isStaticField';
 ISMODELFIELD : '\\isModelField';
+ISIMMUTABLEFIELD:'\\isImmutableField';
 ISINSTRICTFP : '\\isInStrictFp';
 ISSUBTYPE : '\\sub';
 EQUAL_UNIQUE : '\\equalUnique';

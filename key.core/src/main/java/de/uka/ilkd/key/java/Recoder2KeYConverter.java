@@ -1262,7 +1262,7 @@ public class Recoder2KeYConverter {
                 if (compileTimeConstant == null) {
                     pv = new LocationVariable(pen, getKeYJavaType(recoderType),
                         getKeYJavaType(recContainingClassType), recoderVarSpec.isStatic(), isModel,
-                        false, isFinal);
+                        false, isFinal, isImmutable);
                 } else {
                     pv = new ProgramConstant(pen, getKeYJavaType(recoderType),
                         getKeYJavaType(recContainingClassType), recoderVarSpec.isStatic(),
@@ -1420,7 +1420,7 @@ public class Recoder2KeYConverter {
                 new ProgramElementName(makeAdmissibleName(fs.getName()),
                     makeAdmissibleName(recField.getContainingClassType().getFullName())),
                 getKeYJavaType(recoderType), getKeYJavaType(recField.getContainingClassType()),
-                recField.isStatic(), isModel, false, isFinal);
+                recField.isStatic(), isModel, false, isFinal, false);
             insertToMap(fs, new FieldSpecification(pv));
             return new FieldReference(pv, prefix);
         }
