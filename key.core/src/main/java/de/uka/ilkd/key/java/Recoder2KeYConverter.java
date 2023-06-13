@@ -34,6 +34,7 @@ import de.uka.ilkd.key.logic.ProgramElementName;
 import de.uka.ilkd.key.logic.VariableNamer;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.Sort;
+import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
 import de.uka.ilkd.key.util.Debug;
 import de.uka.ilkd.key.util.MiscTools;
 
@@ -1251,6 +1252,8 @@ public class Recoder2KeYConverter {
 
                 boolean isModel = false;
                 boolean isFinal = recoderVarSpec.isFinal();
+                String[] splitted = pen.toString().split("::");
+                boolean isImmutable = OpalResultProvider.getINST().isImmutableField(splitted[0], splitted[1]);
                 for (recoder.java.declaration.Modifier mod : recoderVarSpec.getParent()
                         .getModifiers()) {
                     if (mod instanceof de.uka.ilkd.key.java.recoderext.Model) {
