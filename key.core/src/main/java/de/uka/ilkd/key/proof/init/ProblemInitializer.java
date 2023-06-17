@@ -284,11 +284,6 @@ public final class ProblemInitializer {
             }
             // support for single file loading
             final String[] cus = var.toArray(new String[0]);
-            try {
-                r2k.readCompilationUnitsAsFiles(cus, fileRepo);
-            } catch (ParseExceptionInFile e) {
-                throw new ProofInputException(e);
-            }
 
             reportStatus("Run Opal Analyses");
             OpalRunner opalRunner = new OpalRunner();
@@ -296,6 +291,12 @@ public final class ProblemInitializer {
                 opalRunner.run(initConfig.getSaSettings(), cus);
             } catch (Exception e) {
                 // ToDo: Do better Exception Handling here!
+            }
+
+            try {
+                r2k.readCompilationUnitsAsFiles(cus, fileRepo);
+            } catch (ParseExceptionInFile e) {
+                throw new ProofInputException(e);
             }
         } else {
             reportStatus("Reading Java libraries");
