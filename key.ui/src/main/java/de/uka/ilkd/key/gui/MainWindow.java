@@ -840,6 +840,7 @@ public final class MainWindow extends JFrame {
         menuBar.add(createViewMenu());
         menuBar.add(createProofMenu(null));
         menuBar.add(createOptionsMenu());
+        menuBar.add(createOpalMenu());
         KeYGuiExtensionFacade.addExtensionsToMainMenu(this, menuBar);
         menuBar.add(Box.createHorizontalGlue());
         menuBar.add(createHelpMenu());
@@ -1000,6 +1001,15 @@ public final class MainWindow extends JFrame {
 
         return options;
 
+    }
+
+    private JMenu createOpalMenu() {
+        JMenu opal = new JMenu("Opal");
+        opal.add(new JCheckBoxMenuItem(new OpalFieldImmutabilityAnalysisAction(this)));
+        opal.add(new JCheckBoxMenuItem(new OpalMethodPurityAnalysisAction(this)));
+        opal.addSeparator();
+        opal.add(new OpalShowResultsAction(this));
+        return opal;
     }
 
     private JMenu createHelpMenu() {

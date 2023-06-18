@@ -288,7 +288,7 @@ public final class ProblemInitializer {
             reportStatus("Run Opal Analyses");
             OpalRunner opalRunner = new OpalRunner();
             try {
-                opalRunner.run(initConfig.getSaSettings(), cus);
+                opalRunner.run(cus);
             } catch (Exception e) {
                 // ToDo: Do better Exception Handling here!
             }

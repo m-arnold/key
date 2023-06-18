@@ -27,6 +27,8 @@ dependencies {
 
     api 'org.key-project:docking-frames-common:1.1.3p1'
     api 'org.key-project:docking-frames-core:1.1.3p1'
+    implementation project(path: ':keyext.staticanalysis')
+    implementation project(path: ':keyext.staticanalysis')
 
     runtimeOnly project(":keyext.ui.testgen")
     runtimeOnly project(":keyext.exploration")

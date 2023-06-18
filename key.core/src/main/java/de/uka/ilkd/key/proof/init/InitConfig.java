@@ -81,8 +81,6 @@ public class InitConfig {
 
     private ProofSettings settings;
 
-    private StaticAnalysisSettings saSettings;
-
     // -------------------------------------------------------------------------
     // constructors
     // -------------------------------------------------------------------------
@@ -399,8 +397,6 @@ public class InitConfig {
     public ProofSettings getSettings() {
         return settings;
     }
-
-    public StaticAnalysisSettings getSaSettings() { return saSettings; }
 
 
     /**

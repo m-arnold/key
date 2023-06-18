@@ -2,17 +2,36 @@ package de.uka.ilkd.key.staticanalysis;
 
 public class OpalRunner {
 
+    // TODO: Do i need this one?
     private String outputPath;
 
-    public void OpalRunner() {
-        // ToDo!
+    private String jarPath;
+
+    private StaticAnalysisSettings settings;
+
+    public OpalRunner() {
+        settings = StaticAnalysisSettings.getINST();
     }
 
-    public void run(StaticAnalysisSettings settings, String[] filesNames) {
+    public void run(String[] filesNames) {
+        if (!settings.anyAnalysisSelected()) {
+            System.out.println("No analyses selected!");
+            return;
+        }
         JarProcessor jarProcessor = new JarProcessor(filesNames);
-        String jarPath = jarProcessor.createForAnalysis();
-        FieldImmutabilityAnalysisRunner.run(jarPath);
+        jarPath = jarProcessor.createForAnalysis();
+        runAnalyses();
         jarProcessor.deleteAnalysisJar();
     }
 
+    private void runAnalyses() {
+        if (settings.useFieldImmutabilityAnalysis()) {
+            System.out.println("Runs Field ImmutabilityAnalysis!");
+            FieldImmutabilityAnalysisRunner.run(jarPath);
+        }
+        if (settings.useMethodPurityAnalysis()) {
+            System.out.println("Runs Method Purity Analysis!");
+            // ToDO!
+        }
+    }
 }
