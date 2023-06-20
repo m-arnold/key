@@ -35,7 +35,7 @@ public class ImmutableFieldCondition extends VariableConditionAdapter {
             if (op instanceof Function) {
                 String[] splitted = op.name().toString().split("::[$]");
                 if (splitted.length < 2) {
-                    return false;
+                    return false != negated;
                 }
                 ProgramVariable attribute = services.getJavaInfo().getAttribute(splitted[1], splitted[0]);
                 return attribute.isImmutable() != negated;
