@@ -30,4 +30,7 @@ public class OpalResultProvider {
         return fieldImmutabilityResult.isImmutable(className, fieldName);
     }
 
+    public void resetResults() {
+        fieldImmutabilityResult = null;
+    }
 }

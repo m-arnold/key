@@ -11,6 +11,7 @@ public class OpalRunner {
 
     public OpalRunner() {
         settings = StaticAnalysisSettings.getINST();
+        OpalResultProvider.getINST().resetResults();
     }
 
     public void run(String[] filesNames) {
