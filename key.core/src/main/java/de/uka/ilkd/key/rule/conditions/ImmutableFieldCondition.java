@@ -1,6 +1,10 @@
 package de.uka.ilkd.key.rule.conditions;
 
+import de.uka.ilkd.key.java.JavaTools;
 import de.uka.ilkd.key.java.Services;
+import de.uka.ilkd.key.java.StatementBlock;
+import de.uka.ilkd.key.java.statement.MethodFrame;
+import de.uka.ilkd.key.logic.JavaBlock;
 import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.TermImpl;
 import de.uka.ilkd.key.logic.op.*;
@@ -27,6 +31,10 @@ public class ImmutableFieldCondition extends VariableConditionAdapter {
                          Services services) {
         final Object o = instMap.getInstantiation(field);
         if (o instanceof LocationVariable) {
+            // ToDo: Futher discuss this solution...
+            if (duringPrepareEnter(instMap)) {
+                return false != negated;
+            }
             return (((LocationVariable)o).isImmutable()) != negated;
         }
 
@@ -47,4 +55,10 @@ public class ImmutableFieldCondition extends VariableConditionAdapter {
     public String toString() {
         return (negated ? "\\not" : "") + "\\isImmutableField(" + field + ")";
     }
+    private boolean duringPrepareEnter(SVInstantiations instMap) {
+        return instMap.getExecutionContext() != null
+                && instMap.getExecutionContext().getMethodContext() != null
+                && instMap.getExecutionContext().getMethodContext().toString().contains("<prepareEnter>");
+    }
+
 }
