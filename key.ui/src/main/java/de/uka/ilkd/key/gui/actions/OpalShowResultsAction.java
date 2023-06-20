@@ -1,6 +1,11 @@
 package de.uka.ilkd.key.gui.actions;
 
+import de.uka.ilkd.key.core.KeYSelectionEvent;
+import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.gui.MainWindow;
+import de.uka.ilkd.key.proof.Node;
+import de.uka.ilkd.key.proof.Proof;
+import de.uka.ilkd.key.settings.GeneralSettings;
 import de.uka.ilkd.key.staticanalysis.FieldImmutabilityResult;
 import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
 
@@ -11,7 +16,18 @@ public class OpalShowResultsAction extends MainWindowAction {
 
     public OpalShowResultsAction(MainWindow mainWindow) {
         super(mainWindow);
+        init();
         setName("Shows Opal results");
+        setEnabled(false);
+    }
+
+    private void init() {
+        final KeYSelectionListener selListener = new KeYSelectionListener() {
+            public void selectedNodeChanged(KeYSelectionEvent e) {
+                setEnabled(OpalResultProvider.getINST().hasResult());
+            }
+        };
+        getMediator().addKeYSelectionListener(selListener);
     }
 
     @Override
