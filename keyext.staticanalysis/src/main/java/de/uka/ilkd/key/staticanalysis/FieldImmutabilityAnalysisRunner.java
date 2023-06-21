@@ -23,6 +23,7 @@ import scala.jdk.javaapi.CollectionConverters;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -54,7 +55,7 @@ public class FieldImmutabilityAnalysisRunner {
         )._1;
         store.waitOnPhaseCompletion();
 
-        HashMap<String, String> result = new HashMap<>();
+        ArrayList<String[]> result = new ArrayList<>();
         scala.collection.Iterator<EPS<Object, FieldImmutability>> scalaIterator = store.entities(FieldImmutability$.MODULE$.key());
         while (scalaIterator.hasNext()) {
             FinalEP<Object, FieldImmutability> finalEP = scalaIterator.next().toFinalEP();
@@ -64,7 +65,7 @@ public class FieldImmutabilityAnalysisRunner {
                 Field fieldEntity = (Field)finalEP.e();
                 String className = fieldEntity.declaringClassFile().thisType().fqn();
                 String fieldName = fieldEntity.name();
-                result.put(className, fieldName);
+                result.add(new String[]{className, fieldName});
                 System.out.println(className + "." + fieldName + " : Added as transitively immutable field");
             }
         }

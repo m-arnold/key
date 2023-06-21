@@ -1,12 +1,12 @@
 package de.uka.ilkd.key.staticanalysis;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class FieldImmutabilityResult {
 
-    public HashMap<String, String> result;
+    public ArrayList<String[]> result;
 
-    public FieldImmutabilityResult(HashMap<String, String> result) {
+    public FieldImmutabilityResult(ArrayList<String[]> result) {
         this.result = result;
     }
 
@@ -14,6 +14,11 @@ public class FieldImmutabilityResult {
         if (className == null || fieldName == null) {
             return false;
         }
-        return fieldName.equals(result.get(className));
+        for (String[] s : result) {
+            if (s[0].equals(className) && s[1].equals(fieldName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

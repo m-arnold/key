@@ -42,8 +42,8 @@ public class OpalShowResultsAction extends MainWindowAction {
         formattedResult[0] = "Transitively Immutable Field: \n";
         formattedResult[1] = "\n";
         int i = 2;
-        for (String key: result.result.keySet()) {
-            formattedResult[i] = key + "." + result.result.get(key) + "\n";
+        for (String[] s: result.result) {
+            formattedResult[i] = s[0] + "." + s[1] + "\n";
             i++;
         }
         JOptionPane.showMessageDialog(mainWindow, formattedResult, "Opal Results", JOptionPane.INFORMATION_MESSAGE);
