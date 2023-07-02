@@ -3,14 +3,14 @@ package de.uka.ilkd.key.gui.actions;
 import de.uka.ilkd.key.core.KeYSelectionEvent;
 import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.gui.MainWindow;
-import de.uka.ilkd.key.proof.Node;
-import de.uka.ilkd.key.proof.Proof;
-import de.uka.ilkd.key.settings.GeneralSettings;
-import de.uka.ilkd.key.staticanalysis.FieldImmutabilityResult;
+import de.uka.ilkd.key.staticanalysis.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
+import de.uka.ilkd.key.staticanalysis.result.MethodPurityResult;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class OpalShowResultsAction extends MainWindowAction {
 
@@ -37,15 +37,28 @@ public class OpalShowResultsAction extends MainWindowAction {
 
     // TODO: "HACKY" Way... For the moment okay.
     public void showResults() {
-        FieldImmutabilityResult result = OpalResultProvider.getINST().getFieldImmutabilityResult();
-        Object[] formattedResult = new Object[result.result.size()+ 2];
-        formattedResult[0] = "Transitively Immutable Field: \n";
-        formattedResult[1] = "\n";
-        int i = 2;
-        for (String[] s: result.result) {
-            formattedResult[i] = s[0] + "." + s[1] + "\n";
-            i++;
+        ArrayList<Object> formattedResults = new ArrayList<>();
+        FieldImmutabilityResult fieldImmutabilityResult = OpalResultProvider.getINST().getFieldImmutabilityResult();
+        if (fieldImmutabilityResult != null) {
+            formattedResults.add("Immutability Analysis Results: \n");
+            formattedResults.add("\n");
+
+            for (String[] s : fieldImmutabilityResult.result) {
+                formattedResults.add(s[0] + "." + s[1] + " : " + s[2]);
+            }
         }
+        formattedResults.add("\n");
+
+        MethodPurityResult methodPurityResult = OpalResultProvider.getINST().getMethodPurityResult();
+        if (methodPurityResult != null) {
+            formattedResults.add("Purity Analysis Results:");
+            formattedResults.add("\n");
+
+            for (String[] s: methodPurityResult.result) {
+                formattedResults.add((s[0] + "." + s[1] + "(...)" + " : " + s[2] ));
+            }
+        }
+        Object[] formattedResult = formattedResults.toArray();
         JOptionPane.showMessageDialog(mainWindow, formattedResult, "Opal Results", JOptionPane.INFORMATION_MESSAGE);
     }
 

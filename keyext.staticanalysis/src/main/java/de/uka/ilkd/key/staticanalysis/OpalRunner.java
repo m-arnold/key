@@ -1,5 +1,8 @@
 package de.uka.ilkd.key.staticanalysis;
 
+import de.uka.ilkd.key.staticanalysis.runner.FieldImmutabilityAnalysisRunner;
+import de.uka.ilkd.key.staticanalysis.runner.MethodPurityAnalysisRunner;
+
 public class OpalRunner {
 
     // TODO: Do i need this one?
@@ -32,7 +35,8 @@ public class OpalRunner {
         }
         if (settings.useMethodPurityAnalysis()) {
             System.out.println("Runs Method Purity Analysis!");
-            // ToDO!
+            MethodPurityAnalysisRunner runner = new MethodPurityAnalysisRunner(jarPath);
+            runner.run();
         }
     }
 }

@@ -1,5 +1,7 @@
-package de.uka.ilkd.key.staticanalysis;
+package de.uka.ilkd.key.staticanalysis.runner;
 
+import de.uka.ilkd.key.staticanalysis.result.FieldImmutabilityResult;
+import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
 import org.opalj.br.Field;
 import org.opalj.br.analyses.Project;
 import org.opalj.br.fpcf.FPCFAnalysesManager;
@@ -25,7 +27,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class FieldImmutabilityAnalysisRunner {
     public static void run(String pathToJar) {
@@ -60,14 +61,11 @@ public class FieldImmutabilityAnalysisRunner {
         while (scalaIterator.hasNext()) {
             FinalEP<Object, FieldImmutability> finalEP = scalaIterator.next().toFinalEP();
             Property finalProperty = finalEP.p();
-            // ToDo: Kann man hier mit einem Enum arbeiten?
-            if ("TransitivelyImmutableField".equals(finalProperty.toString())) {
-                Field fieldEntity = (Field)finalEP.e();
-                String className = fieldEntity.declaringClassFile().thisType().fqn();
-                String fieldName = fieldEntity.name();
-                result.add(new String[]{className, fieldName});
-                System.out.println(className + "." + fieldName + " : Added as transitively immutable field");
-            }
+            Field fieldEntity = (Field) finalEP.e();
+            String className = fieldEntity.declaringClassFile().thisType().fqn();
+            String fieldName = fieldEntity.name();
+            String immutabilityLevel = finalProperty.toString();
+            result.add(new String[]{className, fieldName, immutabilityLevel});
         }
         OpalResultProvider.getINST().setFieldImmutabilityResult(new FieldImmutabilityResult(result));
     }

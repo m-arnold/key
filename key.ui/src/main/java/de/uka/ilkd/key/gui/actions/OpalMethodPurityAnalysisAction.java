@@ -12,7 +12,7 @@ public class OpalMethodPurityAnalysisAction extends MainWindowAction {
         setName("Use Method Purity Analyis");
         setTooltip("If ticked, Opal's Method Purity Analysis is executed");
         setSelected(StaticAnalysisSettings.getINST().useMethodPurityAnalysis());
-        setEnabled(false);
+        setEnabled(true);
     }
 
     @Override

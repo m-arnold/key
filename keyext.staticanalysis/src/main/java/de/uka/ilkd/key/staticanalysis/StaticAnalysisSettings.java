@@ -27,7 +27,7 @@ public class StaticAnalysisSettings {
      */
     private StaticAnalysisSettings() {
         this.useFieldImmutabilityAnalysis = true;
-        this.useMethodPurityAnalysis = false;
+        this.useMethodPurityAnalysis = true;
         this.useCloseWorldAssumption = false;
     }
 
