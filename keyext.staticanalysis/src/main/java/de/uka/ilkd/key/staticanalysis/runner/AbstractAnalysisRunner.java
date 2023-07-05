@@ -13,14 +13,13 @@ public abstract class AbstractAnalysisRunner {
     protected PropertyStore store;
 
     public AbstractAnalysisRunner(String pathToJar) {
-        p = Project.apply(new File(pathToJar));
-        p.get(RTACallGraphKey$.MODULE$);
+        p = Project.apply(new File(pathToJar)); // Hier anderes Apply verwendetn! apply(file: File, logContext: LogContext, config: Config)
     }
 
     public final void run() {
         startAnalysis();
         // store has to be defined in startAnalysis()! Rethink this!
-        store.waitOnPhaseCompletion();
+
         evaluateResult();
     }
 

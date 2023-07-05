@@ -40,7 +40,7 @@ public class OpalShowResultsAction extends MainWindowAction {
         ArrayList<Object> formattedResults = new ArrayList<>();
         FieldImmutabilityResult fieldImmutabilityResult = OpalResultProvider.getINST().getFieldImmutabilityResult();
         if (fieldImmutabilityResult != null) {
-            formattedResults.add("Immutability Analysis Results: \n");
+            formattedResults.add("Field Immutability Analysis: \n");
             formattedResults.add("\n");
 
             for (String[] s : fieldImmutabilityResult.result) {
@@ -51,7 +51,7 @@ public class OpalShowResultsAction extends MainWindowAction {
 
         MethodPurityResult methodPurityResult = OpalResultProvider.getINST().getMethodPurityResult();
         if (methodPurityResult != null) {
-            formattedResults.add("Purity Analysis Results:");
+            formattedResults.add("Method Purity Analysis:");
             formattedResults.add("\n");
 
             for (String[] s: methodPurityResult.result) {

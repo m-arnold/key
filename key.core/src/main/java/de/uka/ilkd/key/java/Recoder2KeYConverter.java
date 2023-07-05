@@ -1179,10 +1179,13 @@ public class Recoder2KeYConverter {
             assert containerType != null;
             final Type returnType = md.getReturnType();
             // may be null for a void method
+//            boolean isPure = OpalResultProvider.getINST().isPureMethod(containerType.getSort().toString(), methDecl.getName());
+//            int heapCount = isPure ? 0 : (heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
+
             final KeYJavaType returnKJT =
                 returnType == null ? KeYJavaType.VOID_TYPE : getKeYJavaType(returnType);
             result = new ProgramMethod(methDecl, containerType, returnKJT, positionInfo(md),
-                heapSort, heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
+                    heapSort, heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
 
             insertToMap(md, result);
         }

@@ -35,7 +35,9 @@ import de.uka.ilkd.key.rule.Rule;
 import de.uka.ilkd.key.rule.Taclet;
 import de.uka.ilkd.key.settings.ProofSettings;
 import de.uka.ilkd.key.speclang.PositionedString;
+import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
 import de.uka.ilkd.key.staticanalysis.OpalRunner;
+import de.uka.ilkd.key.staticanalysis.StaticAnalysisSettings;
 import de.uka.ilkd.key.util.Debug;
 import de.uka.ilkd.key.util.MiscTools;
 import de.uka.ilkd.key.util.ProgressMonitor;
@@ -285,12 +287,15 @@ public final class ProblemInitializer {
             // support for single file loading
             final String[] cus = var.toArray(new String[0]);
 
-            reportStatus("Run Opal Analyses");
-            OpalRunner opalRunner = new OpalRunner();
-            try {
-                opalRunner.run(cus);
-            } catch (Exception e) {
-                // ToDo: Do better Exception Handling here!
+            OpalResultProvider.getINST().resetResults();
+            if (StaticAnalysisSettings.getINST().anyAnalysisSelected()) {
+                OpalRunner opalRunner = new OpalRunner();
+                try {
+                    reportStatus("Run Opal Analyses");
+                    opalRunner.run(cus);
+                } catch (Exception e) {
+                    // ToDo: Do better Exception Handling here!
+                }
             }
 
             try {
