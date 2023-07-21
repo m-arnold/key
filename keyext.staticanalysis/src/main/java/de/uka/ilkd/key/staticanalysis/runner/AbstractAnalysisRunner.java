@@ -3,6 +3,7 @@ package de.uka.ilkd.key.staticanalysis.runner;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
+import de.uka.ilkd.key.staticanalysis.StaticAnalysisSettings;
 import org.opalj.br.analyses.Project;
 import org.opalj.br.analyses.cg.AllEntryPointsFinder$;
 import org.opalj.br.analyses.cg.InitialEntryPointsKey$;
@@ -26,6 +27,12 @@ public abstract class AbstractAnalysisRunner {
         Config config = ConfigFactory.load(this.getClass().getClassLoader())
                 .withValue(InitialEntryPointsKey$.MODULE$.ConfigKey(), ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.AllEntryPointsFinder"))
                 .withValue(AllEntryPointsFinder$.MODULE$.ConfigKey(), ConfigValueFactory.fromAnyRef(true));
+
+        if (StaticAnalysisSettings.getINST().useCloseWorldAssumption()) {
+            config = config.withValue("org.opalj.br.analyses.cg.ClassExtensibilityKey.analysis",
+                    ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.ClassHierarchyIsNotExtensible"));
+        }
+
         p = Project.apply(new File(pathToJar), GlobalLogContext$.MODULE$, config);
     }
 
@@ -46,3 +53,5 @@ public abstract class AbstractAnalysisRunner {
 
     abstract Seq<ComputationSpecification<FPCFAnalysis>> determineAnalyses();
 }
+
+
