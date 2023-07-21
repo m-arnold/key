@@ -1037,6 +1037,10 @@ public final class MainWindow extends JFrame {
         opal.add(configurePurityAnalysis);
 
         opal.addSeparator();
+        JCheckBoxMenuItem closedWorldAssumption = new JCheckBoxMenuItem(new OpalClosedWorldAction(this));
+        opal.add(closedWorldAssumption);
+
+        opal.addSeparator();
         opal.add(new OpalShowResultsAction(this));
         return opal;
     }

@@ -83,6 +83,10 @@ public class StaticAnalysisSettings {
         this.methodPurityLevel = level;
     }
 
+    public void setUseCloseWorldAssumption(boolean useCloseWorldAssumption) {
+        this.useCloseWorldAssumption = useCloseWorldAssumption;
+    }
+
     public boolean anyAnalysisSelected() {
         return useFieldImmutabilityAnalysis || useMethodPurityAnalysis; // | ... Add new analyses here...
     }
