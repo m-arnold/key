@@ -6,8 +6,13 @@ import com.typesafe.config.ConfigValueFactory;
 import org.opalj.br.analyses.Project;
 import org.opalj.br.analyses.cg.AllEntryPointsFinder$;
 import org.opalj.br.analyses.cg.InitialEntryPointsKey$;
+import org.opalj.br.fpcf.FPCFAnalysesManagerKey$;
+import org.opalj.br.fpcf.FPCFAnalysis;
+import org.opalj.fpcf.ComputationSpecification;
 import org.opalj.fpcf.PropertyStore;
 import org.opalj.log.GlobalLogContext$;
+import org.opalj.tac.cg.RTACallGraphKey$;
+import scala.collection.immutable.Seq;
 
 import java.io.File;
 import java.net.URL;
@@ -26,12 +31,18 @@ public abstract class AbstractAnalysisRunner {
 
     public final void run() {
         startAnalysis();
-        // store has to be defined in startAnalysis()! Rethink this!
-
         evaluateResult();
     }
 
     abstract void evaluateResult();
 
-    abstract void startAnalysis();
+    private void startAnalysis() {
+        p.get(RTACallGraphKey$.MODULE$);
+        store = p.get(FPCFAnalysesManagerKey$.MODULE$).runAll(
+                determineAnalyses()
+        )._1;
+        store.waitOnPhaseCompletion();
+    };
+
+    abstract Seq<ComputationSpecification<FPCFAnalysis>> determineAnalyses();
 }

@@ -2,10 +2,7 @@ package de.uka.ilkd.key.staticanalysis.runner;
 
 import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
 import de.uka.ilkd.key.staticanalysis.result.MethodPurityResult;
-import org.opalj.br.fpcf.FPCFAnalysesManager;
-import org.opalj.br.fpcf.FPCFAnalysesManagerKey$;
 import org.opalj.br.fpcf.FPCFAnalysis;
-import org.opalj.br.fpcf.PropertyStoreKey$;
 import org.opalj.br.fpcf.analyses.EagerL0PurityAnalysis$;
 import org.opalj.br.fpcf.analyses.LazyL0CompileTimeConstancyAnalysis$;
 import org.opalj.br.fpcf.analyses.LazyStaticDataUsageAnalysis$;
@@ -18,7 +15,6 @@ import org.opalj.fpcf.ComputationSpecification;
 import org.opalj.fpcf.EPS;
 import org.opalj.fpcf.FinalEP;
 import org.opalj.fpcf.Property;
-import org.opalj.tac.cg.RTACallGraphKey$;
 import org.opalj.tac.fpcf.analyses.LazyFieldImmutabilityAnalysis$;
 import org.opalj.tac.fpcf.analyses.LazyFieldLocalityAnalysis$;
 import org.opalj.tac.fpcf.analyses.escape.LazyInterProceduralEscapeAnalysis$;
@@ -29,6 +25,7 @@ import org.opalj.tac.fpcf.analyses.fieldassignability.LazyL1FieldAssignabilityAn
 import org.opalj.tac.fpcf.analyses.fieldassignability.LazyL2FieldAssignabilityAnalysis$;
 import org.opalj.tac.fpcf.analyses.purity.EagerL1PurityAnalysis$;
 import org.opalj.tac.fpcf.analyses.purity.EagerL2PurityAnalysis$;
+import scala.collection.immutable.Seq;
 import scala.jdk.javaapi.CollectionConverters;
 
 import java.util.ArrayList;
@@ -77,14 +74,8 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
     }
 
     @Override
-    void startAnalysis() {
-        p.get(RTACallGraphKey$.MODULE$);
-        store = p.get(PropertyStoreKey$.MODULE$);
-        FPCFAnalysesManager manager = p.get(FPCFAnalysesManagerKey$.MODULE$);
-        store = manager.runAll(
-                CollectionConverters.asScala(DEMO_CONF).toSeq()
-        )._1;
-        store.waitOnPhaseCompletion();
+    Seq<ComputationSpecification<FPCFAnalysis>> determineAnalyses() {
+        return  CollectionConverters.asScala(L2_CONF).toSeq();
     }
 
     @Override
