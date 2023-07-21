@@ -25,14 +25,13 @@ public abstract class AbstractAnalysisRunner {
 
     public AbstractAnalysisRunner(String pathToJar) {
         Config config = ConfigFactory.load(this.getClass().getClassLoader())
-                .withValue(InitialEntryPointsKey$.MODULE$.ConfigKey(), ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.AllEntryPointsFinder"))
+                .withValue(InitialEntryPointsKey$.MODULE$.ConfigKey(),
+                        ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.AllEntryPointsFinder"))
                 .withValue(AllEntryPointsFinder$.MODULE$.ConfigKey(), ConfigValueFactory.fromAnyRef(true));
-
         if (StaticAnalysisSettings.getINST().useCloseWorldAssumption()) {
             config = config.withValue("org.opalj.br.analyses.cg.ClassExtensibilityKey.analysis",
                     ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.ClassHierarchyIsNotExtensible"));
         }
-
         p = Project.apply(new File(pathToJar), GlobalLogContext$.MODULE$, config);
     }
 

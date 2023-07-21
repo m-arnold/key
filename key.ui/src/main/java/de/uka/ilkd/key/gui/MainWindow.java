@@ -1005,8 +1005,37 @@ public final class MainWindow extends JFrame {
 
     private JMenu createOpalMenu() {
         JMenu opal = new JMenu("Opal");
+
+        // Field Assignability
         opal.add(new JCheckBoxMenuItem(new OpalFieldImmutabilityAnalysisAction(this)));
+        JMenu configureFieldImmutability = new JMenu("Configure Field Immutability Analysis");
+        ButtonGroup group1 = new ButtonGroup();
+        JCheckBoxMenuItem fiL2 = new JCheckBoxMenuItem(new OpalMethodPuritySetL2Action(this));
+        JCheckBoxMenuItem fiL1 = new JCheckBoxMenuItem(new OpalMethodPuritySetL1Action(this));
+        JCheckBoxMenuItem fiL0 = new JCheckBoxMenuItem(new OpalMethodPuritySetL0Action(this));
+        group1.add(fiL2);
+        group1.add(fiL1);
+        group1.add(fiL0);
+        configureFieldImmutability.add(fiL2);
+        configureFieldImmutability.add(fiL1);
+        configureFieldImmutability.add(fiL0);
+        opal.add(configureFieldImmutability);
+
+        // Method Purity
         opal.add(new JCheckBoxMenuItem(new OpalMethodPurityAnalysisAction(this)));
+        JMenu configurePurityAnalysis = new JMenu("Configure Method Purity Analysis");
+        ButtonGroup group2 = new ButtonGroup();
+        JCheckBoxMenuItem purityL2 = new JCheckBoxMenuItem(new OpalMethodPuritySetL2Action(this));
+        JCheckBoxMenuItem purityL1 = new JCheckBoxMenuItem(new OpalMethodPuritySetL1Action(this));
+        JCheckBoxMenuItem purityL0 = new JCheckBoxMenuItem(new OpalMethodPuritySetL0Action(this));
+        group2.add(purityL2);
+        group2.add(purityL1);
+        group2.add(purityL0);
+        configurePurityAnalysis.add(purityL2);
+        configurePurityAnalysis.add(purityL1);
+        configurePurityAnalysis.add(purityL0);
+        opal.add(configurePurityAnalysis);
+
         opal.addSeparator();
         opal.add(new OpalShowResultsAction(this));
         return opal;

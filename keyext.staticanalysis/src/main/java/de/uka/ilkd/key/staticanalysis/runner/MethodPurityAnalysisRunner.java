@@ -1,6 +1,7 @@
 package de.uka.ilkd.key.staticanalysis.runner;
 
 import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
+import de.uka.ilkd.key.staticanalysis.StaticAnalysisSettings;
 import de.uka.ilkd.key.staticanalysis.result.MethodPurityResult;
 import org.opalj.br.fpcf.FPCFAnalysis;
 import org.opalj.br.fpcf.analyses.EagerL0PurityAnalysis$;
@@ -75,7 +76,17 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
 
     @Override
     Seq<ComputationSpecification<FPCFAnalysis>> determineAnalyses() {
-        return  CollectionConverters.asScala(L2_CONF).toSeq();
+        switch (StaticAnalysisSettings.getINST().getMethodPurityLevel()) {
+            case L2:
+                return CollectionConverters.asScala(L2_CONF).toSeq();
+            case L1:
+                return CollectionConverters.asScala(L1_CONF).toSeq();
+            case L0:
+                return CollectionConverters.asScala(L0_CONF).toSeq();
+
+        }
+        // In case something goes wrong, use L1
+        return CollectionConverters.asScala(L1_CONF).toSeq();
     }
 
     @Override
@@ -95,4 +106,5 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
         OpalResultProvider.getINST().setMethodPurityResult(new MethodPurityResult(result));
     }
 }
+
 

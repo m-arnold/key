@@ -1,10 +1,17 @@
 package de.uka.ilkd.key.staticanalysis;
 
+import de.uka.ilkd.key.staticanalysis.runner.AnalysisLevel;
+
 public class StaticAnalysisSettings {
     private static StaticAnalysisSettings INST;
     private boolean useFieldImmutabilityAnalysis;
     private boolean useMethodPurityAnalysis;
+
+    private AnalysisLevel fieldImmutabilityLevel;
+    private AnalysisLevel methodPurityLevel;
+
     private boolean useCloseWorldAssumption;
+    private StaticAnalysisSettings staticAnalysisSettings;
 
     /**
      * Maybe delete this one, default should be enough
@@ -29,6 +36,8 @@ public class StaticAnalysisSettings {
         this.useFieldImmutabilityAnalysis = true;
         this.useMethodPurityAnalysis = true;
         this.useCloseWorldAssumption = false;
+        this.fieldImmutabilityLevel = AnalysisLevel.L1;
+        this.methodPurityLevel = AnalysisLevel.L1;
     }
 
     public static StaticAnalysisSettings getINST() {
@@ -50,12 +59,28 @@ public class StaticAnalysisSettings {
         return useCloseWorldAssumption;
     }
 
+    public AnalysisLevel getFieldImmutabilityLevel() {
+        return this.fieldImmutabilityLevel;
+    }
+
+    public AnalysisLevel getMethodPurityLevel() {
+        return this.methodPurityLevel;
+    }
+
     public void setUseFieldImmutabilityAnalysis(boolean useFieldImmutabilityAnalysis) {
         this.useFieldImmutabilityAnalysis = useFieldImmutabilityAnalysis;
     }
 
     public void setUseMethodPurityAnalysis(boolean useMethodPurityAnalysis) {
         this.useMethodPurityAnalysis = useMethodPurityAnalysis;
+    }
+
+    public void setFieldImmutabilityLevel(AnalysisLevel level) {
+        this.fieldImmutabilityLevel = level;
+    }
+
+    public void setMethodPurityLevel(AnalysisLevel level) {
+        this.methodPurityLevel = level;
     }
 
     public boolean anyAnalysisSelected() {
