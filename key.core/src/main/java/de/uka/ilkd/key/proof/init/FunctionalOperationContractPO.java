@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: GPL-2.0-only */
 package de.uka.ilkd.key.proof.init;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-
 import de.uka.ilkd.key.java.Expression;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.java.Statement;
@@ -21,20 +17,21 @@ import de.uka.ilkd.key.logic.label.OriginTermLabel;
 import de.uka.ilkd.key.logic.label.OriginTermLabel.Origin;
 import de.uka.ilkd.key.logic.label.OriginTermLabel.SpecType;
 import de.uka.ilkd.key.logic.label.SymbolicExecutionTermLabel;
-import de.uka.ilkd.key.logic.op.IProgramMethod;
-import de.uka.ilkd.key.logic.op.LocationVariable;
-import de.uka.ilkd.key.logic.op.Modality;
-import de.uka.ilkd.key.logic.op.ProgramVariable;
+import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.rule.metaconstruct.ConstructorCall;
 import de.uka.ilkd.key.rule.metaconstruct.CreateObject;
 import de.uka.ilkd.key.rule.metaconstruct.PostWork;
 import de.uka.ilkd.key.speclang.Contract;
 import de.uka.ilkd.key.speclang.FunctionalOperationContract;
-
+import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
 import org.key_project.util.collection.ImmutableArray;
 import org.key_project.util.collection.ImmutableList;
 import org.key_project.util.collection.ImmutableSLList;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 import static de.uka.ilkd.key.java.KeYJavaASTFactory.declare;
 
@@ -229,6 +226,10 @@ public class FunctionalOperationContractPO extends AbstractOperationPO implement
     protected Term buildFrameClause(List<LocationVariable> modHeaps, Map<Term, Term> heapToAtPre,
             ProgramVariable selfVar, ImmutableList<ProgramVariable> paramVars, Services services) {
         Term frameTerm = null;
+
+        String[] split = getContract().getTarget().toString().split("::");
+        boolean isSideEffectFree = OpalResultProvider.getINST().isSideEffectFree(split[0], split[1]);
+
         for (LocationVariable heap : modHeaps) {
             final Term ft;
             if (!getContract().hasModifiesClause(heap)) {
@@ -240,8 +241,10 @@ public class FunctionalOperationContractPO extends AbstractOperationPO implement
                 }
             } else {
                 if (!getContract().hasFreeModifiesClause(heap)) {
-                    ft = tb.frame(tb.var(heap), heapToAtPre,
-                        getContract().getMod(heap, selfVar, paramVars, services));
+                    Term mod = getContract().getMod(heap, selfVar, paramVars, services);
+                    if (isSideEffectFree &&
+                            "empty".equals(mod.op().toString())) {
+                        ft = tb.tt();
                 } else {
                     ft = tb.frame(tb.var(heap), heapToAtPre, tb.union(
                         getContract().getMod(heap, selfVar, paramVars, services),

@@ -41,6 +41,13 @@ public class OpalResultProvider {
         return fieldImmutabilityResult.isImmutable(className, fieldName);
     }
 
+    public boolean isSideEffectFree(String className, String methodName) {
+        if (methodPurityResult == null) {
+            return false;
+        }
+        return methodPurityResult.isSideEffectFree(className, methodName);
+    }
+
     public boolean isPureMethod(String className, String methodName) {
         if (methodPurityResult == null) {
             return false;
