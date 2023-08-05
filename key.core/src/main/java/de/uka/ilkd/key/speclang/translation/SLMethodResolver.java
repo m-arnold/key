@@ -94,9 +94,17 @@ public final class SLMethodResolver extends SLExpressionResolver {
         }
         ImmutableList<SLExpression> params = parameters.parameters();
         int i = 0;
-        Term[] subs = new Term[params.size() - pm.getHeapCount(services)
+//        params.size() => 3 (heap, a ,b)
+//        pm.getHeapCount(services) => 0
+//        pm.getStateCount() => 1
+//
+        Term[] subs = new Term[params.size() - pm.getHeapCount(services) - (pm.getHeapCount(services) == 0 ? 1 : 0)
                 + pm.getStateCount() * pm.getHeapCount(services) + (pm.isStatic() ? 0 : 1)];
+
         for (LocationVariable heap : heaps) {
+            if(pm.getHeapCount(services) == 0) {
+                continue;
+            }
             if (pm.getStateCount() >= 1) {
                 subs[i++] = services.getTermBuilder().var(heap);
                 if (pm.getStateCount() == 2) {
@@ -117,6 +125,10 @@ public final class SLMethodResolver extends SLExpressionResolver {
         for (SLExpression slExpression : params) {
             // Remember: parameters.isLisOfTerm() is true!
             final Term term = slExpression.getTerm();
+            if (pm.getHeapCount(services) == 0 && term.sort() == services.getTypeConverter().getHeapLDT().targetSort()) {
+                continue;
+            }
+
             subs[i] = term.sort() == Sort.FORMULA ? services.getTermBuilder().convertToBoolean(term)
                     : term;
             i++;

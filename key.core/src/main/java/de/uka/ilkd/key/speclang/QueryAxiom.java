@@ -169,10 +169,12 @@ public final class QueryAxiom extends ClassAxiom {
                 update = tb.parallel(update, u);
             }
         }
-        update = target.isStatic() ? update
-                : tb.parallel(update, tb.elementary(selfProgSV, tb.var(selfSV)));
-        for (int i = 0; i < paramSVs.length; i++) {
-            update = tb.parallel(update, tb.elementary(paramProgSVs[i], tb.var(paramSVs[i])));
+        if (target.getHeapCount(services) > 0) {
+            update = target.isStatic() ? update
+                    : tb.parallel(update, tb.elementary(selfProgSV, tb.var(selfSV)));
+            for (int i = 0; i < paramSVs.length; i++) {
+                update = tb.parallel(update, tb.elementary(paramProgSVs[i], tb.var(paramSVs[i])));
+            }
         }
         final Term post = tb.imp(tb.reachableValue(tb.var(resultProgSV), target.getReturnType()),
             tb.equals(tb.var(skolemSV), tb.var(resultProgSV)));
@@ -220,7 +222,8 @@ public final class QueryAxiom extends ClassAxiom {
         final Term replacewith = tb.var(skolemSV);
 
         // create added sequent
-        final Term addedFormula = tb.apply(update, tb.prog(Modality.BOX, jb, post), null);
+//        final Term addedFormula = tb.apply(update, tb.prog(Modality.BOX, jb, post), null);
+        final Term addedFormula = update == null ? tb.prog(Modality.BOX, jb, post): tb.apply(update, tb.prog(Modality.BOX, jb, post), null);
         final SequentFormula addedCf = new SequentFormula(addedFormula);
         final Semisequent addedSemiSeq =
             Semisequent.EMPTY_SEMISEQUENT.insertFirst(addedCf).semisequent();
