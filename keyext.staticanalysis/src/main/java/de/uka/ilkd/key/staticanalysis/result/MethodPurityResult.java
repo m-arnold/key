@@ -32,7 +32,7 @@ public class MethodPurityResult {
             return false;
         }
         for (String[] s : result) {
-            PurityLevel level = PurityLevel.valueOf(s[3]);
+            PurityLevel level = PurityLevel.valueOf(s[2]);
             if (s[0].equals(className) && s[1].equals(methodName) && (
                     level == PurityLevel.Pure || level == PurityLevel.CompileTimePure)) {
                 return true;
