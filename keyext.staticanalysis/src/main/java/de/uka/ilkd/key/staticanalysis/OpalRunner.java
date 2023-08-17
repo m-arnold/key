@@ -31,7 +31,8 @@ public class OpalRunner {
     private void runAnalyses() {
         if (settings.useFieldImmutabilityAnalysis()) {
             System.out.println("Runs Field ImmutabilityAnalysis!");
-            FieldImmutabilityAnalysisRunner.run(jarPath);
+            FieldImmutabilityAnalysisRunner runner = new FieldImmutabilityAnalysisRunner(jarPath);
+            runner.run();
         }
         if (settings.useMethodPurityAnalysis()) {
             System.out.println("Runs Method Purity Analysis!");

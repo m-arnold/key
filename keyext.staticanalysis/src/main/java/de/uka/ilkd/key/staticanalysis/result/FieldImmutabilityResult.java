@@ -15,7 +15,15 @@ public class FieldImmutabilityResult {
             return false;
         }
         for (String[] s : result) {
-            if (s[0].equals(className) && s[1].equals(fieldName) && "TransitivelyImmutableField".equals(s[2])) {
+            FieldImmutabilityLevel level;
+            try {
+                level = FieldImmutabilityLevel.valueOf(s[2]);
+            } catch (IllegalArgumentException e){
+                    System.out.println("Field immutability level " + s[2] + " could not be found in corresponding enum");
+                    return false;
+            }
+            if (s[0].equals(className) && s[1].equals(fieldName) &&
+                    level == FieldImmutabilityLevel.TransitivelyImmutableField) {
                 return true;
             }
         }

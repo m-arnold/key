@@ -16,11 +16,17 @@ public class MethodPurityResult {
             return false;
         }
         for (String[] s : result) {
-            PurityLevel level = PurityLevel.valueOf(s[2]);
+            MethodPurityLevel level;
+            try {
+                level = MethodPurityLevel.valueOf(s[2]);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Method Purity Level " + s[2] + " could not be found in corresponding enum");
+                return false;
+            }
             if (s[0].equals(className) && s[1].equals(methodName) && (
-                    level == PurityLevel.Pure ||
-                    level == PurityLevel.SideEffectFree ||
-                    level == PurityLevel.CompileTimePure)) {
+                    level == MethodPurityLevel.Pure ||
+                    level == MethodPurityLevel.SideEffectFree ||
+                    level == MethodPurityLevel.CompileTimePure)) {
                 return true;
             }
         }
@@ -32,9 +38,15 @@ public class MethodPurityResult {
             return false;
         }
         for (String[] s : result) {
-            PurityLevel level = PurityLevel.valueOf(s[2]);
+            MethodPurityLevel level;
+            try {
+                level = MethodPurityLevel.valueOf(s[2]);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Method Purity Level " + s[2] + " could not be found in corresponding enum");
+                return false;
+            }
             if (s[0].equals(className) && s[1].equals(methodName) && (
-                    level == PurityLevel.Pure || level == PurityLevel.CompileTimePure)) {
+                    level == MethodPurityLevel.Pure || level == MethodPurityLevel.CompileTimePure)) {
                 return true;
             }
         }

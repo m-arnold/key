@@ -1,6 +1,6 @@
 package de.uka.ilkd.key.staticanalysis.result;
 
-public enum PurityLevel {
+public enum MethodPurityLevel {
 
     CompileTimePure,    // CompileTimePure > Pure!
     Pure,
@@ -12,4 +12,5 @@ public enum PurityLevel {
     DContextuallyPure,
     DContextuallySideEffectFree,
     ImpureByAnalysis
+    // ToDO: DContextuallyPure(IntTrieSet(0) is missing! Think about the structure of this enum again!
 }
