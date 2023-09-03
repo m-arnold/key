@@ -66,9 +66,16 @@ public class FieldImmutabilityAnalysisRunner extends AbstractAnalysisRunner{
             String className = fieldEntity.declaringClassFile().thisType().fqn();
             String fieldName = fieldEntity.name();
             String immutabilityLevel = finalProperty.toString();
-            result.add(new String[]{className, fieldName, immutabilityLevel});
+            if (!isJDKFile(className)) {
+                result.add(new String[]{className, fieldName, immutabilityLevel});
+            }
         }
         OpalResultProvider.getINST().setFieldImmutabilityResult(new FieldImmutabilityResult(result));
+    }
+
+    // TODO: Das hier nochmal mit Richard besprechen.
+    private boolean isJDKFile(String s) {
+        return s.contains("/");
     }
 
     @Override
