@@ -245,6 +245,10 @@ public class FunctionalOperationContractPO extends AbstractOperationPO implement
                     if (isSideEffectFree &&
                             "empty".equals(mod.op().toString())) {
                         ft = tb.tt();
+                    } else {
+                        ft = tb.frame(tb.var(heap), heapToAtPre,
+                                getContract().getMod(heap, selfVar, paramVars, services));
+                    }
                 } else {
                     ft = tb.frame(tb.var(heap), heapToAtPre, tb.union(
                         getContract().getMod(heap, selfVar, paramVars, services),
