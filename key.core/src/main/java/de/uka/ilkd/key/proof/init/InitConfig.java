@@ -27,6 +27,7 @@ import de.uka.ilkd.key.rule.*;
 import de.uka.ilkd.key.rule.tacletbuilder.TacletBuilder;
 import de.uka.ilkd.key.settings.ProofSettings;
 
+import de.uka.ilkd.key.staticanalysis.StaticAnalysisSettings;
 import org.key_project.util.collection.DefaultImmutableSet;
 import org.key_project.util.collection.ImmutableList;
 import org.key_project.util.collection.ImmutableSLList;
@@ -80,7 +81,7 @@ public class InitConfig {
 
     private ProofSettings settings;
 
-
+    private StaticAnalysisSettings saSettings;
 
     // -------------------------------------------------------------------------
     // constructors
@@ -398,6 +399,8 @@ public class InitConfig {
     public ProofSettings getSettings() {
         return settings;
     }
+
+    public StaticAnalysisSettings getSaSettings() { return saSettings; }
 
 
     /**

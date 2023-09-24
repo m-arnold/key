@@ -35,6 +35,7 @@ import de.uka.ilkd.key.rule.Rule;
 import de.uka.ilkd.key.rule.Taclet;
 import de.uka.ilkd.key.settings.ProofSettings;
 import de.uka.ilkd.key.speclang.PositionedString;
+import de.uka.ilkd.key.staticanalysis.OpalRunner;
 import de.uka.ilkd.key.util.Debug;
 import de.uka.ilkd.key.util.MiscTools;
 import de.uka.ilkd.key.util.ProgressMonitor;
@@ -225,7 +226,6 @@ public final class ProblemInitializer {
 
     }
 
-
     /**
      * Helper for readEnvInput().
      */
@@ -288,6 +288,14 @@ public final class ProblemInitializer {
                 r2k.readCompilationUnitsAsFiles(cus, fileRepo);
             } catch (ParseExceptionInFile e) {
                 throw new ProofInputException(e);
+            }
+
+            reportStatus("Run Opal Analyses");
+            OpalRunner opalRunner = new OpalRunner();
+            try {
+                opalRunner.run(initConfig.getSaSettings(), cus);
+            } catch (Exception e) {
+                // ToDo: Do better Exception Handling here!
             }
         } else {
             reportStatus("Reading Java libraries");
