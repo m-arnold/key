@@ -1016,6 +1016,7 @@ class Translator extends JmlParserBaseVisitor<Object> {
             if (receiver == null) {
                 raiseError("Unknown reference to " + fullyQualifiedName, ctx);
             }
+            // Is it possible to detected no_state here?
             return new SLExpression(tb.allFields(receiver.getTerm()),
                 javaInfo.getPrimitiveKeYJavaType(PrimitiveType.JAVA_LOCSET));
         }
@@ -1067,6 +1068,7 @@ class Translator extends JmlParserBaseVisitor<Object> {
 
     private SLParameters visitParameters(JmlParser.ExpressionlistContext ctx) {
         ImmutableList<SLExpression> params = accept(ctx);
+        // Is it possible to detected no_state here? Heap is always added to the parameters.
         return getSlParametersWithHeap(params);
     }
 

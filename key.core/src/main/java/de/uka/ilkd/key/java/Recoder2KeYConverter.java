@@ -50,6 +50,7 @@ import recoder.abstraction.ClassType;
 import recoder.abstraction.Type;
 import recoder.io.DataLocation;
 import recoder.java.NonTerminalProgramElement;
+import recoder.java.declaration.DeclarationSpecifier;
 import recoder.java.declaration.TypeDeclaration;
 import recoder.list.generic.ASTList;
 
@@ -1165,6 +1166,17 @@ public class Recoder2KeYConverter {
                     }
                 }
             }
+            
+            boolean isPure = OpalResultProvider.getINST().isPureMethod(
+                    getServiceConfiguration().getCrossReferenceSourceInfo()
+                            .getContainingClassType((recoder.abstraction.Member) md).getName(),
+                    md.getName());
+            if (isPure) {
+                ASTList<DeclarationSpecifier> mods = md.getDeclarationSpecifiers();
+                mods.add(new de.uka.ilkd.key.java.recoderext.NoState());
+                md.setDeclarationSpecifiers(mods);
+            }
+
 
             final MethodDeclaration methDecl = new MethodDeclaration(collectChildren(md),
                 md.getASTParent() instanceof recoder.java.declaration.InterfaceDeclaration,
@@ -1179,7 +1191,7 @@ public class Recoder2KeYConverter {
             assert containerType != null;
             final Type returnType = md.getReturnType();
             // may be null for a void method
-            boolean isPure = OpalResultProvider.getINST().isPureMethod(containerType.getSort().toString(), methDecl.getName());
+//            boolean isPure = OpalResultProvider.getINST().isPureMethod(containerType.getSort().toString(), methDecl.getName());
             int heapCount = isPure ? 0 : (heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
 
             final KeYJavaType returnKJT =

@@ -397,6 +397,7 @@ public class TacletGenerator {
         } else {
             final VariableSV targetSV = SchemaVariableFactory.createVariableSV(
                 new Name(target.sort().name().toString().substring(0, 1)), target.sort());
+            // No State Bug: targetSVReachable remains null here! Since the foreach is traversed
             Term targetSVReachable = null;
             for (SchemaVariable heapSV : heapSVs) {
                 tacletBuilder.addVarsNotFreeIn(targetSV, heapSV);
@@ -414,6 +415,11 @@ public class TacletGenerator {
             for (SchemaVariable paramSV : paramSVs) {
                 tacletBuilder.addVarsNotFreeIn(targetSV, paramSV);
             }
+            // Possible Fix?
+            if (heapSVs.isEmpty()) {
+                targetSVReachable = TB.tt();
+            }
+            // NPE, since due to no_state foreach is not traversed.
             axiomSatisfiable =
                 TB.ex(targetSV, TB.and(targetSVReachable, OpReplacer.replace(targetTerm,
                     TB.var(targetSV), schemaRepresents.term, services.getTermFactory())));
