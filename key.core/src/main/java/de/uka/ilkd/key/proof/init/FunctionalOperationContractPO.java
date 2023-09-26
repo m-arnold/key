@@ -263,6 +263,11 @@ public class FunctionalOperationContractPO extends AbstractOperationPO implement
             }
         }
 
+        // No state fix!
+        if (modHeaps.isEmpty()) {
+            frameTerm = tb.tt();
+        }
+
         return tb.addLabelToAllSubs(frameTerm,
             new OriginTermLabel(new Origin(SpecType.ASSIGNABLE)));
     }

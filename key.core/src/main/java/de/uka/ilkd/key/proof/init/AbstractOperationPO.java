@@ -353,9 +353,14 @@ public abstract class AbstractOperationPO extends AbstractPO {
         final Term progPost;
         if (representsFromContract == null) {
             final Term[] updateSubs =
-                createUpdateSubs(target, selfVar, paramVars, modHeaps, atPreVars, tb);
-            progPost = tb.apply(saveBeforeHeaps,
-                tb.apply(tb.elementary(tb.var(resultVar), tb.func(target, updateSubs)), post));
+                    createUpdateSubs(target, selfVar, paramVars, modHeaps, atPreVars, tb);
+            // No state fix!
+            if (saveBeforeHeaps == null) {
+                progPost = tb.apply(tb.elementary(tb.var(resultVar), tb.func(target, updateSubs)), post);
+            } else {
+                progPost = tb.apply(saveBeforeHeaps,
+                        tb.apply(tb.elementary(tb.var(resultVar), tb.func(target, updateSubs)), post));
+            }
         } else {
             final Term body = representsFromContract;
             assert body.op() == Equality.EQUALS
@@ -1021,6 +1026,10 @@ public abstract class AbstractOperationPO extends AbstractPO {
             collectLookupContracts(pm, proofServices);
         Term representsFromContract = null;
         for (FunctionalOperationContract fop : lookupContracts) {
+            // No state fix!
+            if (heaps.isEmpty()) {
+                break;
+            }
             representsFromContract = fop.getRepresentsAxiom(heaps.get(0), selfVar, paramVars,
                 resultVar, atPreVars, proofServices);
             if (representsFromContract != null) {

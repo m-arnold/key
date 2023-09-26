@@ -201,7 +201,8 @@ public abstract class AbstractPO implements IPersistablePO {
      */
     protected Term generateSelfCreated(List<LocationVariable> heaps, IProgramMethod pm,
             ProgramVariable selfVar, Services services) {
-        if (selfVar == null || pm.isConstructor()) {
+        // No state fix!
+        if (selfVar == null || pm.isConstructor() || heaps.isEmpty()) {
             return tb.tt();
         }
         Term created = null;
