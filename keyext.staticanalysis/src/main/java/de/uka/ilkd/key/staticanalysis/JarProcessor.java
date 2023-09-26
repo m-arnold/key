@@ -13,13 +13,14 @@ import java.util.jar.JarOutputStream;
 
 public class JarProcessor {
 
-    private String outputPath = "/home/marc";
+    private String outputPath;
     private String jarPath;
     private String[] filesToCompile;
     private List<String> existingClassFiles;
     private boolean deleteJarAfterAnalysis = true;
 
     public JarProcessor(String[] filePaths) {
+        outputPath = System.getProperty("user.home");
         jarPath = outputPath + "/forAnalysis.jar";
         this.filesToCompile = filePaths;
     }
