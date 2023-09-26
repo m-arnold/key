@@ -44,12 +44,15 @@ public abstract class AbstractAnalysisRunner {
                     ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.ClassHierarchyIsNotExtensible"));
         }
 
-        // With JDK
-//        File[] classfiles = new File[] {new File(pathToJar)};
-//        File[] libFiles = new File[] {getJREFolder()};
-//        p = Project.apply(classfiles, libFiles, GlobalLogContext$.MODULE$, config);
-        // Without JDK
-        p = Project.apply(new File(pathToJar), GlobalLogContext$.MODULE$, config);
+        if (StaticAnalysisSettings.getINST().analyzeJDKFiles()) {
+            // With JDK
+            File[] classfiles = new File[] {new File(pathToJar)};
+            File[] libFiles = new File[] {getJREFolder()};
+            p = Project.apply(classfiles, libFiles, GlobalLogContext$.MODULE$, config);
+        } else {
+            // Without JDK
+            p = Project.apply(new File(pathToJar), GlobalLogContext$.MODULE$, config);
+        }
     }
 
     public final void run() {

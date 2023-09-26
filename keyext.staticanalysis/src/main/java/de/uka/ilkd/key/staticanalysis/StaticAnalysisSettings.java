@@ -5,13 +5,12 @@ import de.uka.ilkd.key.staticanalysis.runner.AnalysisLevel;
 public class StaticAnalysisSettings {
     private static StaticAnalysisSettings INST;
     private boolean useFieldImmutabilityAnalysis;
-    private boolean useMethodPurityAnalysis;
-
     private AnalysisLevel fieldImmutabilityLevel;
+    private boolean useMethodPurityAnalysis;
     private AnalysisLevel methodPurityLevel;
 
     private boolean useCloseWorldAssumption;
-    private StaticAnalysisSettings staticAnalysisSettings;
+    private boolean analyzeJDKFiles;
 
     /**
      * Maybe delete this one, default should be enough
@@ -19,14 +18,17 @@ public class StaticAnalysisSettings {
      * @param useFieldImmutabilityAnalysis
      * @param useMethodPurityAnalysis
      * @param useCloseWorldAssumption
+     * @param analyzeJDKFiles
      */
     private StaticAnalysisSettings(boolean useFieldImmutabilityAnalysis,
                                    boolean useMethodPurityAnalysis,
-                                   boolean useCloseWorldAssumption)
+                                   boolean useCloseWorldAssumption,
+                                   boolean analyzeJDKFiles)
     {
         this.useFieldImmutabilityAnalysis = useFieldImmutabilityAnalysis;
         this.useMethodPurityAnalysis = useMethodPurityAnalysis;
         this.useCloseWorldAssumption = useCloseWorldAssumption;
+        this.analyzeJDKFiles = analyzeJDKFiles;
     }
 
     /**
@@ -36,6 +38,7 @@ public class StaticAnalysisSettings {
         this.useFieldImmutabilityAnalysis = true;
         this.useMethodPurityAnalysis = true;
         this.useCloseWorldAssumption = false;
+        this.analyzeJDKFiles = true;
         this.fieldImmutabilityLevel = AnalysisLevel.L1;
         this.methodPurityLevel = AnalysisLevel.L1;
     }
@@ -58,6 +61,8 @@ public class StaticAnalysisSettings {
     public boolean useCloseWorldAssumption() {
         return useCloseWorldAssumption;
     }
+
+    public boolean analyzeJDKFiles() { return analyzeJDKFiles;}
 
     public AnalysisLevel getFieldImmutabilityLevel() {
         return this.fieldImmutabilityLevel;
@@ -85,6 +90,10 @@ public class StaticAnalysisSettings {
 
     public void setUseCloseWorldAssumption(boolean useCloseWorldAssumption) {
         this.useCloseWorldAssumption = useCloseWorldAssumption;
+    }
+
+    public void setAnalyzeJDKFiles(boolean analyzeJDKFiles) {
+        this.analyzeJDKFiles = analyzeJDKFiles;
     }
 
     public boolean anyAnalysisSelected() {
