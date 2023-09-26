@@ -1,3 +1,5 @@
 dependencies {
-    implementation group: 'de.opal-project', name: 'framework_2.13', version: '5.0.0'
+    // Use local Opal Snapshot!
+//    implementation group: 'de.opal-project', name: 'framework_2.13', version: '5.0.0'
+    implementation group: 'de.opal-project', name: 'framework_2.13', version: '5.0.1-SNAPSHOT'
 }

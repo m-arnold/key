@@ -60,13 +60,16 @@ public abstract class AbstractAnalysisRunner {
     abstract void evaluateResult();
 
     void setDomain() {
-//        Function1<Option<Set<Class<?>>>, Set<Class<?>>> infoFunction = new AbstractFunction1() {
-//            @Override
-//            public Object apply(Object v1) {
-//                return CollectionConverters.asScala(Arrays.asList(DefaultPerformInvocationsDomainWithCFGAndDefUse.class)).toSet();
-//            }
-//        };
-//        p.updateProjectInformationKeyInitializationData(AIDomainFactoryKey$.MODULE$, infoFunction);
+        Function1<Option<Set<Class<?>>>, Set<Class<?>>> infoFunction = new AbstractFunction1() {
+            @Override
+            public Object apply(Object v1) {
+                // When using local Opal Snapshot. (which contains Fix for the Domain)
+                return CollectionConverters.asScala(Arrays.asList(DefaultPerformInvocationsDomainWithCFGAndDefUse.class)).toSet();
+                // Otherwise:
+                // return CollectionConverters.asScala(Arrays.asList(DefaultDomainWithCFGAndDefUse.class)).toSet();
+            }
+        };
+        p.updateProjectInformationKeyInitializationData(AIDomainFactoryKey$.MODULE$, infoFunction);
     }
 
     private void startAnalysis() {
@@ -87,28 +90,6 @@ public abstract class AbstractAnalysisRunner {
 
         String javaVersion = System.getProperty("java.version");
         if (javaVersion.startsWith("1.")) {
-//            String s
-//            unBootClassPath = System.getProperties().getProperty("sun.boot.class.path");
-//            String[] paths = sunBootClassPath.split(File.pathSeparator);
-//            for (String s: paths) {
-//                if (s.endsWith("rt.jar")) {
-//
-//                }
-//            }
-//
-//            paths.find(_.endsWith("rt.jar")) match {
-//
-//                case Some(libPath) =>
-//                    new File(libPath.substring(0, libPath.length() - 6))
-//
-//                case None =>
-//                    val sunBootLibraryPath = System.getProperty("sun.boot.library.path")
-//                    if (sunBootLibraryPath == null) {
-//                        throw new RuntimeException("cannot locate the JRE libraries")
-//                    } else {
-//                        new File(sunBootLibraryPath)
-//                    }
-//            }
             throw new NotImplementedException("TODO!");
         } else {
             String javaJMods = System.getProperty("java.home") + "/jmods";
