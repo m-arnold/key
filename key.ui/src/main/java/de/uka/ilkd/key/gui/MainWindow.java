@@ -1041,6 +1041,7 @@ public final class MainWindow extends JFrame {
         opal.add(closedWorldAssumption);
 
         opal.addSeparator();
+        opal.add(new OpalShowCompileErrorAction(this));
         opal.add(new OpalShowResultsAction(this));
         return opal;
     }

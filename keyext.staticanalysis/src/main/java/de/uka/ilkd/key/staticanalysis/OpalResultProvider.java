@@ -3,6 +3,11 @@ package de.uka.ilkd.key.staticanalysis;
 import de.uka.ilkd.key.staticanalysis.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.staticanalysis.result.MethodPurityResult;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Provides results of executed Static Analyses
  */
@@ -12,6 +17,10 @@ public class OpalResultProvider {
 
     private FieldImmutabilityResult fieldImmutabilityResult;
     private MethodPurityResult methodPurityResult;
+
+    private boolean compilationFailed;
+
+    private List<String> compileErrors;
 
     public static OpalResultProvider getINST() {
         if (INST == null) {
@@ -32,6 +41,22 @@ public class OpalResultProvider {
     }
     public MethodPurityResult getMethodPurityResult() {
         return methodPurityResult;
+    }
+
+    public boolean hasCompilationFailed() {
+        return compilationFailed;
+    }
+
+    public void addCompileError(String errorMsg) {
+        if (compileErrors == null) {
+            compileErrors = new ArrayList<>();
+            compilationFailed = true;
+        }
+        compileErrors.add(errorMsg);
+    }
+
+    public List<String> getCompileErrors() {
+        return compileErrors;
     }
 
     public boolean isImmutableField(String className, String fieldName) {
@@ -58,6 +83,8 @@ public class OpalResultProvider {
     public void resetResults() {
         fieldImmutabilityResult = null;
         methodPurityResult = null;
+        compileErrors = null;
+        compilationFailed = false;
     }
 
     public boolean hasResult() {

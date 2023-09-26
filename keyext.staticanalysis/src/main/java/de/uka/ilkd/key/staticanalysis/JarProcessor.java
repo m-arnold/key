@@ -56,6 +56,9 @@ public class JarProcessor {
             JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
             boolean success = task.call();
             System.out.println("Filename: " + filePath + "| Success: " + success);
+            if (!success) {
+                diagnostics.getDiagnostics().stream().forEach(error -> OpalResultProvider.getINST().addCompileError(error.toString()));
+            }
         }
         System.out.println("COMPILE FINISHED");
     }

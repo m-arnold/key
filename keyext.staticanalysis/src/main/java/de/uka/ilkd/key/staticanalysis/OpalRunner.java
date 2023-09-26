@@ -24,7 +24,11 @@ public class OpalRunner {
         }
         JarProcessor jarProcessor = new JarProcessor(filesNames);
         jarPath = jarProcessor.createForAnalysis();
-        runAnalyses();
+        if (OpalResultProvider.getINST().hasCompilationFailed()) {
+            System.out.println("Compile Error! No Analyses are executed!");
+        } else {
+            runAnalyses();
+        }
         jarProcessor.deleteAnalysisJar();
     }
 

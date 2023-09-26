@@ -10,7 +10,6 @@ import de.uka.ilkd.key.staticanalysis.result.MethodPurityResult;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class OpalShowResultsAction extends MainWindowAction {
 
@@ -24,7 +23,8 @@ public class OpalShowResultsAction extends MainWindowAction {
     private void init() {
         final KeYSelectionListener selListener = new KeYSelectionListener() {
             public void selectedNodeChanged(KeYSelectionEvent e) {
-                setEnabled(OpalResultProvider.getINST().hasResult());
+                setEnabled(OpalResultProvider.getINST().hasResult() &&
+                        !OpalResultProvider.getINST().hasCompilationFailed());
             }
         };
         getMediator().addKeYSelectionListener(selListener);
@@ -58,9 +58,8 @@ public class OpalShowResultsAction extends MainWindowAction {
                 formattedResults.add((s[0] + "." + s[1] + "(...)" + " : " + s[2] ));
             }
         }
+
         Object[] formattedResult = formattedResults.toArray();
         JOptionPane.showMessageDialog(mainWindow, formattedResult, "Opal Results", JOptionPane.INFORMATION_MESSAGE);
     }
-
-
 }
