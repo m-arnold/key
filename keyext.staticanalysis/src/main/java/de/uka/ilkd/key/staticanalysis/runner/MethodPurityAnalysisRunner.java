@@ -101,10 +101,17 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
             String className = ctx.method().declaringClassType().fqn();
             String methodName = ctx.method().name();
             String purityLevel = finalProperty.toString();
-            result.add(new String[]{className, methodName, purityLevel});
+            if (!isInit(methodName)) {
+                result.add(new String[]{className, methodName, purityLevel});
+            }
         }
         OpalResultProvider.getINST().setMethodPurityResult(new MethodPurityResult(result));
     }
+
+    public boolean isInit(String methodName) {
+        return methodName.contains("<init>");
+    }
+
 }
 
 
