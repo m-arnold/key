@@ -1,4 +1,4 @@
-package de.uka.ilkd.key.staticanalysis;
+package de.uka.ilkd.key.opal;
 
 import javax.tools.*;
 import java.io.File;

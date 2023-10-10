@@ -1,4 +1,4 @@
-package de.uka.ilkd.key.staticanalysis.result;
+package de.uka.ilkd.key.opal.result;
 
 import java.util.ArrayList;
 import java.util.List;

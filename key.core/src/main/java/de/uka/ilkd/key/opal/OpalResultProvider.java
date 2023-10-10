@@ -1,13 +1,11 @@
-package de.uka.ilkd.key.staticanalysis;
+package de.uka.ilkd.key.opal;
 
-import de.uka.ilkd.key.staticanalysis.result.FieldImmutabilityResult;
-import de.uka.ilkd.key.staticanalysis.result.MethodPurityResult;
+import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
+import de.uka.ilkd.key.opal.result.MethodPurityResult;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Provides results of executed Static Analyses

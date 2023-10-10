@@ -1,9 +1,9 @@
-package de.uka.ilkd.key.staticanalysis.runner;
+package de.uka.ilkd.key.opal.runner;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
-import de.uka.ilkd.key.staticanalysis.StaticAnalysisSettings;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import org.apache.commons.lang3.NotImplementedException;
 import org.opalj.ai.domain.l2.DefaultPerformInvocationsDomainWithCFGAndDefUse;
 import org.opalj.ai.fpcf.properties.AIDomainFactoryKey$;

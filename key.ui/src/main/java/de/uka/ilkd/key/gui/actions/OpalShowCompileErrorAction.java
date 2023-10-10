@@ -3,7 +3,7 @@ package de.uka.ilkd.key.gui.actions;
 import de.uka.ilkd.key.core.KeYSelectionEvent;
 import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.gui.MainWindow;
-import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
+import de.uka.ilkd.key.opal.OpalResultProvider;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

@@ -1,7 +1,7 @@
-package de.uka.ilkd.key.staticanalysis;
+package de.uka.ilkd.key.opal;
 
-import de.uka.ilkd.key.staticanalysis.runner.FieldImmutabilityAnalysisRunner;
-import de.uka.ilkd.key.staticanalysis.runner.MethodPurityAnalysisRunner;
+import de.uka.ilkd.key.opal.runner.FieldImmutabilityAnalysisRunner;
+import de.uka.ilkd.key.opal.runner.MethodPurityAnalysisRunner;
 
 public class OpalRunner {
 

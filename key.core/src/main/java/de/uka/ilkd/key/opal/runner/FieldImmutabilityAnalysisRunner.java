@@ -1,7 +1,7 @@
-package de.uka.ilkd.key.staticanalysis.runner;
+package de.uka.ilkd.key.opal.runner;
 
-import de.uka.ilkd.key.staticanalysis.OpalResultProvider;
-import de.uka.ilkd.key.staticanalysis.result.FieldImmutabilityResult;
+import de.uka.ilkd.key.opal.OpalResultProvider;
+import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
 import org.opalj.br.Field;
 import org.opalj.br.fpcf.FPCFAnalysis;
 import org.opalj.br.fpcf.analyses.LazyL0CompileTimeConstancyAnalysis$;

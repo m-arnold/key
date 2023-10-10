@@ -1,6 +1,6 @@
-package de.uka.ilkd.key.staticanalysis;
+package de.uka.ilkd.key.opal;
 
-import de.uka.ilkd.key.staticanalysis.runner.AnalysisLevel;
+import de.uka.ilkd.key.opal.runner.AnalysisLevel;
 
 public class StaticAnalysisSettings {
     private static StaticAnalysisSettings INST;

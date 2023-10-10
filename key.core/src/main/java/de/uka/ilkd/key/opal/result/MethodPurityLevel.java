@@ -1,4 +1,4 @@
-package de.uka.ilkd.key.staticanalysis.result;
+package de.uka.ilkd.key.opal.result;
 
 public enum MethodPurityLevel {
 

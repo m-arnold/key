@@ -1,7 +1,7 @@
 package de.uka.ilkd.key.gui.actions;
 
 import de.uka.ilkd.key.gui.MainWindow;
-import de.uka.ilkd.key.staticanalysis.StaticAnalysisSettings;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
