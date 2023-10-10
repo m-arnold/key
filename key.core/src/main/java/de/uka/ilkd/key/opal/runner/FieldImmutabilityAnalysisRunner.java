@@ -1,7 +1,9 @@
 package de.uka.ilkd.key.opal.runner;
 
 import de.uka.ilkd.key.opal.OpalResultProvider;
+import de.uka.ilkd.key.opal.result.FieldImmutabilityLevel;
 import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
+import de.uka.ilkd.key.util.Pair;
 import org.opalj.br.Field;
 import org.opalj.br.fpcf.FPCFAnalysis;
 import org.opalj.br.fpcf.analyses.LazyL0CompileTimeConstancyAnalysis$;
@@ -24,9 +26,7 @@ import org.opalj.tac.fpcf.analyses.purity.LazyL2PurityAnalysis$;
 import scala.collection.immutable.Seq;
 import scala.jdk.javaapi.CollectionConverters;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class FieldImmutabilityAnalysisRunner extends AbstractAnalysisRunner{
 
@@ -57,7 +57,7 @@ public class FieldImmutabilityAnalysisRunner extends AbstractAnalysisRunner{
 
     @Override
     void evaluateResult() {
-        ArrayList<String[]> result = new ArrayList<>();
+        Map<Pair<String,String>, FieldImmutabilityLevel> result = new HashMap<>();
         scala.collection.Iterator<EPS<Object, FieldImmutability>> scalaIterator = store.entities(FieldImmutability$.MODULE$.key());
         while (scalaIterator.hasNext()) {
             FinalEP<Object, FieldImmutability> finalEP = scalaIterator.next().toFinalEP();
@@ -67,7 +67,7 @@ public class FieldImmutabilityAnalysisRunner extends AbstractAnalysisRunner{
             String fieldName = fieldEntity.name();
             String immutabilityLevel = finalProperty.toString();
             if (!isJDKFile(className)) {
-                result.add(new String[]{className, fieldName, immutabilityLevel});
+                result.put(new Pair<>(className, fieldName), FieldImmutabilityLevel.valueOf(immutabilityLevel));
             }
         }
         OpalResultProvider.getINST().setFieldImmutabilityResult(new FieldImmutabilityResult(result));

@@ -3,6 +3,7 @@ package de.uka.ilkd.key.gui.actions;
 import de.uka.ilkd.key.core.KeYSelectionEvent;
 import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.gui.MainWindow;
+import de.uka.ilkd.key.opal.result.FieldImmutabilityLevel;
 import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.opal.OpalResultProvider;
 import de.uka.ilkd.key.opal.result.MethodPurityLevel;
@@ -45,8 +46,9 @@ public class OpalShowResultsAction extends MainWindowAction {
             formattedResults.add("Field Immutability Analysis: \n");
             formattedResults.add("\n");
 
-            for (String[] s : fieldImmutabilityResult.result) {
-                formattedResults.add(s[0] + "." + s[1] + " : " + s[2]);
+            for (Pair<String,String> key : fieldImmutabilityResult.result.keySet()) {
+                FieldImmutabilityLevel level = fieldImmutabilityResult.result.get(key);
+                formattedResults.add(key.first + "." + key.second + " : " + level);
             }
         }
         formattedResults.add("\n");

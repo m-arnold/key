@@ -1,12 +1,16 @@
 package de.uka.ilkd.key.opal.result;
 
-import java.util.ArrayList;
+import de.uka.ilkd.key.util.Pair;
+
+import java.util.Map;
+
+import static de.uka.ilkd.key.opal.result.FieldImmutabilityLevel.TransitivelyImmutableField;
 
 public class FieldImmutabilityResult {
 
-    public ArrayList<String[]> result;
+    public Map<Pair<String,String>, FieldImmutabilityLevel> result;
 
-    public FieldImmutabilityResult(ArrayList<String[]> result) {
+    public FieldImmutabilityResult(Map<Pair<String,String>, FieldImmutabilityLevel> result) {
         this.result = result;
     }
 
@@ -14,19 +18,7 @@ public class FieldImmutabilityResult {
         if (className == null || fieldName == null) {
             return false;
         }
-        for (String[] s : result) {
-            FieldImmutabilityLevel level;
-            try {
-                level = FieldImmutabilityLevel.valueOf(s[2]);
-            } catch (IllegalArgumentException e){
-                    System.out.println("Field immutability level " + s[2] + " could not be found in corresponding enum");
-                    return false;
-            }
-            if (s[0].equals(className) && s[1].equals(fieldName) &&
-                    level == FieldImmutabilityLevel.TransitivelyImmutableField) {
-                return true;
-            }
-        }
-        return false;
+        FieldImmutabilityLevel level = result.get(new Pair<>(className, fieldName));
+        return (level != null && level == TransitivelyImmutableField);
     }
 }
