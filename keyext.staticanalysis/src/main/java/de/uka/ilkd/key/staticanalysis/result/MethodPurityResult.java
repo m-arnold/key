@@ -1,6 +1,7 @@
 package de.uka.ilkd.key.staticanalysis.result;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MethodPurityResult {
 
@@ -51,5 +52,37 @@ public class MethodPurityResult {
             }
         }
         return false;
+    }
+
+    public List<String> getJMLAssignableExprs(String className, String methodName, List<String> paramNames) {
+        List<String> res = new ArrayList<>();
+        String[] match = null;
+        for (String[] arr: result) {
+            // TODO: Use a different data structure for result!!
+            if (arr[0].equals(className) && arr[1].equals(methodName)) {
+                match = arr;
+                break;
+            }
+        }
+        if (match != null) {
+            switch (MethodPurityLevel.valueOf(match[2])) {
+                case CompileTimePure:
+                case Pure:
+                case SideEffectFree:
+                    res.add("\\nothing");
+                    break;
+                case ExternallyPure:
+                case ExternallySideEffectFree:
+                    res.add("this.*");
+                    break;
+                case ContextuallyPure:
+                case ContextuallySideEffectFree:
+                    for (String parameterName: paramNames) {
+                        res.add(parameterName + ".*");
+                    }
+                    res.add("this.*");
+            }
+        }
+        return res;
     }
 }

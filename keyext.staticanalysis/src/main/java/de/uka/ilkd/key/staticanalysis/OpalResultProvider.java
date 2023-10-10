@@ -2,6 +2,7 @@ package de.uka.ilkd.key.staticanalysis;
 
 import de.uka.ilkd.key.staticanalysis.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.staticanalysis.result.MethodPurityResult;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +81,11 @@ public class OpalResultProvider {
         return methodPurityResult.isPure(className, methodName);
     }
 
+    public boolean isContextOrExternalPure(String classe, String methodenname) {
+        // ToDO: Determine if needed. If so, implement!
+        throw new NotImplementedException();
+    }
+
     public void resetResults() {
         fieldImmutabilityResult = null;
         methodPurityResult = null;
@@ -89,5 +95,12 @@ public class OpalResultProvider {
 
     public boolean hasResult() {
         return fieldImmutabilityResult != null || methodPurityResult != null;
+    }
+
+    public List<String> getJMLAssignableExprs(String className, String methodName, List<String> paramNames) {
+        if (methodPurityResult == null) {
+            return new ArrayList<>();
+        }
+        return methodPurityResult.getJMLAssignableExprs(className, methodName, paramNames);
     }
 }
