@@ -7,6 +7,8 @@ public enum MethodPurityLevel {
     SideEffectFree,
     DPure,              // DPure > SideEffectFree??
     DSideEffectFree,
+    ExternallyPure,
+    ExternallySideEffectFree,
     ContextuallyPure,
     ContextuallySideEffectFree,
     DContextuallyPure,

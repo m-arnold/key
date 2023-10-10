@@ -100,7 +100,7 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
             SimpleContext ctx = (SimpleContext) finalEP.e();
             String className = ctx.method().declaringClassType().fqn();
             String methodName = ctx.method().name();
-            String purityLevel = finalProperty.toString();
+            String purityLevel = cleanUpName(finalProperty.toString());
             if (!isInit(methodName)) {
                 result.add(new String[]{className, methodName, purityLevel});
             }
@@ -108,9 +108,24 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
         OpalResultProvider.getINST().setMethodPurityResult(new MethodPurityResult(result));
     }
 
-    public boolean isInit(String methodName) {
+    private boolean isInit(String methodName) {
         return methodName.contains("<init>");
     }
+
+    /**
+     * ToDo: Discuss how to do this better. Is currently necessary because of results like
+     * ContextuallyPure(InTrieSet(10))
+     *
+     * @param name
+     * @return
+     */
+    private String cleanUpName(String name) {
+        if (name != null & name.contains("(")) {
+            return name.split("\\(")[0];
+        }
+        return name;
+    }
+
 
 }
 
