@@ -2,7 +2,9 @@ package de.uka.ilkd.key.opal.runner;
 
 import de.uka.ilkd.key.opal.OpalResultProvider;
 import de.uka.ilkd.key.opal.StaticAnalysisSettings;
+import de.uka.ilkd.key.opal.result.MethodPurityLevel;
 import de.uka.ilkd.key.opal.result.MethodPurityResult;
+import de.uka.ilkd.key.util.Pair;
 import org.opalj.br.fpcf.FPCFAnalysis;
 import org.opalj.br.fpcf.analyses.EagerL0PurityAnalysis$;
 import org.opalj.br.fpcf.analyses.LazyL0CompileTimeConstancyAnalysis$;
@@ -29,9 +31,7 @@ import org.opalj.tac.fpcf.analyses.purity.EagerL2PurityAnalysis$;
 import scala.collection.immutable.Seq;
 import scala.jdk.javaapi.CollectionConverters;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
 
@@ -91,7 +91,7 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
 
     @Override
     void evaluateResult() {
-        ArrayList<String[]> result = new ArrayList<>();
+        Map<Pair<String,String>, MethodPurityLevel> result = new HashMap<>();
         scala.collection.Iterator<EPS<Object, Purity>> scalaIterator = store.entities(Purity$.MODULE$.key());
         while (scalaIterator.hasNext()) {
             FinalEP<Object, Purity> finalEP = scalaIterator.next().toFinalEP();
@@ -102,7 +102,7 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
             String methodName = ctx.method().name();
             String purityLevel = cleanUpName(finalProperty.toString());
             if (!isInit(methodName)) {
-                result.add(new String[]{className, methodName, purityLevel});
+                result.put(new Pair<>(className,methodName), MethodPurityLevel.valueOf(purityLevel));
             }
         }
         OpalResultProvider.getINST().setMethodPurityResult(new MethodPurityResult(result));

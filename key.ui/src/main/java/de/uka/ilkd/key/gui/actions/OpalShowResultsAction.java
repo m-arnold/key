@@ -5,7 +5,9 @@ import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.opal.OpalResultProvider;
+import de.uka.ilkd.key.opal.result.MethodPurityLevel;
 import de.uka.ilkd.key.opal.result.MethodPurityResult;
+import de.uka.ilkd.key.util.Pair;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -54,8 +56,9 @@ public class OpalShowResultsAction extends MainWindowAction {
             formattedResults.add("Method Purity Analysis:");
             formattedResults.add("\n");
 
-            for (String[] s: methodPurityResult.result) {
-                formattedResults.add((s[0] + "." + s[1] + "(...)" + " : " + s[2] ));
+            for (Pair<String,String> key: methodPurityResult.result.keySet()) {
+                MethodPurityLevel level = methodPurityResult.result.get(key);
+                formattedResults.add((key.first + "." + key.second + "(...)" + " : " + level ));
             }
         }
 

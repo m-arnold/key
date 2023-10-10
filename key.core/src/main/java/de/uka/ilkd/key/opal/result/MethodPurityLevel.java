@@ -14,5 +14,4 @@ public enum MethodPurityLevel {
     DContextuallyPure,
     DContextuallySideEffectFree,
     ImpureByAnalysis
-    // ToDO: DContextuallyPure(IntTrieSet(0) is missing! Think about the structure of this enum again!
 }
