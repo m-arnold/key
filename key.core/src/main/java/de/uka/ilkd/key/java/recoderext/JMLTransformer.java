@@ -36,7 +36,7 @@ import recoder.list.generic.ASTArrayList;
 import recoder.list.generic.ASTList;
 
 import static java.lang.String.format;
-
+// TODO: Hier Richard fragen, möglicherweise könnte man das Ganze auch hier angehen.
 /**
  * RecodeR transformation that parses JML comments, and attaches code-like specifications (ghost
  * fields, set statements, model methods) directly to the RecodeR AST. Note that internally, this

@@ -34,6 +34,7 @@ import de.uka.ilkd.key.speclang.njml.PreParser;
 import de.uka.ilkd.key.speclang.translation.SLTranslationException;
 import de.uka.ilkd.key.speclang.translation.SLWarningException;
 
+import de.uka.ilkd.key.opal.OpalResultProvider;
 import org.key_project.util.collection.*;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -362,6 +363,9 @@ public final class JMLSpecExtractor implements SpecExtractor {
         } else {
             constructs = ImmutableSLList.nil();
         }
+        // Solution 1 to generate assignables:
+        // Extend constructs assignable clauses based on Opal Purity Level
+        constructs = addOpalAssignable(constructs, pm);
 
         // create JML contracts out of constructs, add them to result
         TextualJMLConstruct[] constructsArray =
@@ -506,6 +510,37 @@ public final class JMLSpecExtractor implements SpecExtractor {
         }
 
         return result;
+    }
+
+    private ImmutableList<TextualJMLConstruct> addOpalAssignable(ImmutableList<TextualJMLConstruct> constructs, IProgramMethod pm) {
+        List<String> paramNames = new ArrayList<>();
+        for (ParameterDeclaration decl: pm.getParameters()) {
+            paramNames.add(decl.getVariables().get(0).getName());
+        }
+        List<String> jmlExprs = OpalResultProvider.getINST()
+                .getJMLAssignableExprs(pm.getContainerType().getSort().toString(), pm.getName(), paramNames);
+        // Is Empty if the method is not even contextually sideeffect free, no useful assignable can be added
+        if (jmlExprs.isEmpty()) {
+            return constructs;
+        }
+        // No existing behaviour
+        if (constructs.isEmpty()) {
+            TextualJMLSpecCase specCase = new TextualJMLSpecCase(ImmutableSLList.nil(), Behavior.NONE);
+            for (String expr: jmlExprs) {
+                specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(expr));
+            }
+            return constructs.append(specCase);
+        }
+        // Extend possible existing behaviours
+        for (TextualJMLConstruct construct : constructs) {
+            if (construct instanceof TextualJMLSpecCase && ((TextualJMLSpecCase) construct).getAssignable().isEmpty()) {
+                TextualJMLSpecCase specCase = (TextualJMLSpecCase) construct;
+                for (String expr : jmlExprs) {
+                    specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(expr));
+                }
+            }
+        }
+        return constructs;
     }
 
     @Override
