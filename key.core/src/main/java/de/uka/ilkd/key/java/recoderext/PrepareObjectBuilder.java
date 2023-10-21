@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import de.uka.ilkd.key.opal.OpalResultProvider;
 import de.uka.ilkd.key.util.Debug;
 
 import recoder.CrossReferenceServiceConfiguration;
@@ -103,6 +104,9 @@ public class PrepareObjectBuilder extends RecoderModelTransformer {
         }
         ASTList<Statement> result = new ASTArrayList<>(fields.size());
         for (Field field : fields) {
+            if (OpalResultProvider.getINST().isImmutableField(getClassNameForField(field), field.getName())) {
+                continue;
+            }
             if (!field.isStatic()) {
                 Identifier fieldId;
                 if (field.getName().charAt(0) != '<') {
@@ -114,6 +118,19 @@ public class PrepareObjectBuilder extends RecoderModelTransformer {
         }
 
         return result;
+    }
+
+    /**
+     * Returns the classname of the field.
+     * @param field
+     * @return Returns a String object containing the classname, or null, if an ClassCastException orccured
+     */
+    private String getClassNameForField(Field field) {
+        try {
+            return ((FieldDeclaration)(((FieldSpecification) field).getParent())).getMemberParent().getName();
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 
     /**
