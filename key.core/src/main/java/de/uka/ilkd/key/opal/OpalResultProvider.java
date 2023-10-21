@@ -1,8 +1,12 @@
 package de.uka.ilkd.key.opal;
 
+import de.uka.ilkd.key.logic.Term;
+import de.uka.ilkd.key.logic.TermBuilder;
+import de.uka.ilkd.key.logic.op.ProgramVariable;
 import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.opal.result.MethodPurityResult;
 import org.apache.commons.lang3.NotImplementedException;
+import org.key_project.util.collection.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,10 +99,17 @@ public class OpalResultProvider {
         return fieldImmutabilityResult != null || methodPurityResult != null;
     }
 
-    public List<String> getJMLAssignableExprs(String className, String methodName, List<String> paramNames) {
+    public String getJMLAssignableExpr(String className, String methodName, List<String> paramNames) {
         if (methodPurityResult == null) {
-            return new ArrayList<>();
+            return "";
         }
-        return methodPurityResult.getJMLAssignableExprs(className, methodName, paramNames);
+        return methodPurityResult.getJMLAssignableExpr(className, methodName, paramNames);
+    }
+
+    public Term getAssignableTerm(String classname, String methodname, TermBuilder tb, ProgramVariable selfvar, ImmutableList<ProgramVariable> parameters) {
+        if (methodPurityResult == null) {
+            return tb.allLocs();
+        }
+        return methodPurityResult.getAssignableTerm(classname, methodname, tb, selfvar, parameters);
     }
 }

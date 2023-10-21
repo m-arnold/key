@@ -55,7 +55,7 @@ public class ExpressionTranslatorTest {
         JmlParser.ExpressionContext ctx = parser.expression();
         Assertions.assertEquals(0, parser.getNumberOfSyntaxErrors());
         Translator et = new Translator(services, kjt, self, SpecMathMode.defaultMode(),
-            ImmutableSLList.nil(), result, exc, new HashMap<>(), new HashMap<>());
+                null, ImmutableSLList.nil(), result, exc, new HashMap<>(), new HashMap<>());
         LOGGER.debug("{}", ctx.accept(et));
     }
 }

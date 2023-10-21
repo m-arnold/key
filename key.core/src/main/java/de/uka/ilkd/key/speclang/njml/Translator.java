@@ -26,6 +26,7 @@ import de.uka.ilkd.key.logic.*;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.ArraySort;
 import de.uka.ilkd.key.logic.sort.Sort;
+import de.uka.ilkd.key.opal.OpalResultProvider;
 import de.uka.ilkd.key.proof.OpReplacer;
 import de.uka.ilkd.key.speclang.ClassAxiom;
 import de.uka.ilkd.key.speclang.HeapContext;
@@ -75,6 +76,7 @@ class Translator extends JmlParserBaseVisitor<Object> {
     private final SLExceptionFactory exc;
     private final JmlTermFactory termFactory;
     private final ProgramVariable selfVar;
+    private final IProgramMethod method;
     private final ImmutableList<ProgramVariable> paramVars;
     private final ProgramVariable resultVar;
     private final ProgramVariable excVar;
@@ -85,7 +87,7 @@ class Translator extends JmlParserBaseVisitor<Object> {
     private final JMLResolverManager resolverManager;
 
     Translator(Services services, KeYJavaType specInClass, ProgramVariable self,
-            SpecMathMode specMathMode, ImmutableList<ProgramVariable> paramVars,
+            SpecMathMode specMathMode, IProgramMethod method ,ImmutableList<ProgramVariable> paramVars,
             ProgramVariable result, ProgramVariable exc, Map<LocationVariable, Term> atPres,
             Map<LocationVariable, Term> atBefores) {
         assert self == null || specInClass != null;
@@ -101,6 +103,7 @@ class Translator extends JmlParserBaseVisitor<Object> {
         this.exc = new SLExceptionFactory(null, 1, 0);
 
         this.selfVar = self;
+        this.method = method;
         this.paramVars = paramVars;
         this.resultVar = result;
         this.excVar = exc;
@@ -2011,6 +2014,12 @@ class Translator extends JmlParserBaseVisitor<Object> {
             final Term storeRef = accept(ctx.storeRefUnion());
             assert storeRef != null;
             t = termFactory.assignable(storeRef);
+        }
+        String className = this.containerType.getSort().toString();
+        String methodName = this.method != null ? this.method.getName() : "";
+        Term OpalAssignable = OpalResultProvider.getINST().getAssignableTerm(className, methodName, tb, selfVar, paramVars);
+        if (!t.equals(tb.ff())) {
+            t = tb.intersect(OpalAssignable, t);
         }
         for (LocationVariable heap : heaps) {
             contractClauses.add(ContractClauses.ASSIGNABLE, heap, t);

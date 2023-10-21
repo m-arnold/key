@@ -12,9 +12,7 @@ import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.java.abstraction.KeYJavaType;
 import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.label.OriginTermLabel;
-import de.uka.ilkd.key.logic.op.IObserverFunction;
-import de.uka.ilkd.key.logic.op.LocationVariable;
-import de.uka.ilkd.key.logic.op.ProgramVariable;
+import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.speclang.PositionedString;
 import de.uka.ilkd.key.speclang.jml.translation.Context;
 import de.uka.ilkd.key.speclang.translation.SLExpression;
@@ -49,6 +47,7 @@ public class JmlIO {
     private Services services;
     private KeYJavaType specInClass;
     private ProgramVariable selfVar;
+    private IProgramMethod method;
     private SpecMathMode specMathMode;
     private ImmutableList<ProgramVariable> paramVars;
     private ProgramVariable resultVar;
@@ -176,7 +175,7 @@ public class JmlIO {
      * Interpret the given parse tree as an JML expression in the current context.
      */
     private Object interpret(ParserRuleContext ctx) {
-        Translator visitor = new Translator(services, specInClass, selfVar, specMathMode, paramVars,
+        Translator visitor = new Translator(services, specInClass, selfVar, specMathMode, method, paramVars,
             resultVar, excVar, atPres, atBefores);
         Object obj = ctx.accept(visitor);
         ImmutableList<PositionedString> newWarnings = ImmutableList.fromList(visitor.getWarnings());
@@ -320,6 +319,14 @@ public class JmlIO {
     }
 
     /**
+     * Sets the pm.
+     */
+    public JmlIO pm(IProgramMethod method) {
+        this.method = method;
+        return this;
+    }
+
+    /**
      * Sets the spec math mode.
      */
     public JmlIO specMathMode(@Nonnull SpecMathMode specMathMode) {
@@ -384,6 +391,7 @@ public class JmlIO {
         this.classType(context.classType());
         this.specMathMode(context.specMathMode());
         this.selfVar(context.selfVar());
+        this.pm(context.method());
         return this;
     }
 

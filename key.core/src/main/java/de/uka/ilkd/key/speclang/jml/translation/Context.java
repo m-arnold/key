@@ -21,7 +21,7 @@ import de.uka.ilkd.key.speclang.njml.SpecMathMode;
  * @param classType    The containing class
  * @author Julian Wiesler
  */
-public record Context(@Nonnull SpecMathMode specMathMode, @Nonnull KeYJavaType classType, ProgramVariable selfVar) {
+public record Context(@Nonnull SpecMathMode specMathMode, @Nonnull KeYJavaType classType, IProgramMethod method, ProgramVariable selfVar) {
     /**
      * Constructs a self var from the given parameters
      *
@@ -55,7 +55,7 @@ public record Context(@Nonnull SpecMathMode specMathMode, @Nonnull KeYJavaType c
      */
     public static Context inMethodWithSelfVar(@Nonnull IProgramMethod pm, ProgramVariable selfVar) {
         var mode = JMLInfoExtractor.getSpecMathModeOrDefault(pm);
-        return new Context(mode, pm.getContainerType(), selfVar);
+        return new Context(mode, pm.getContainerType(), pm, selfVar);
     }
 
     /**
@@ -69,7 +69,7 @@ public record Context(@Nonnull SpecMathMode specMathMode, @Nonnull KeYJavaType c
                                   TermBuilder tb) {
         var selfVar = createSelfVar(tb, classType, isStaticContext);
         var mode = JMLInfoExtractor.getSpecMathModeOrDefault(classType);
-        return new Context(mode, classType, selfVar);
+        return new Context(mode, classType, null, selfVar);
     }
 
     /**
@@ -78,6 +78,6 @@ public record Context(@Nonnull SpecMathMode specMathMode, @Nonnull KeYJavaType c
      * @param mode spec math mode
      */
     public Context orWithSpecMathMode(@Nullable SpecMathMode mode) {
-        return mode == null ? this : new Context(mode, this.classType, this.selfVar);
+        return mode == null ? this : new Context(mode, this.classType, null, this.selfVar);
     }
 }

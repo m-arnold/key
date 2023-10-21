@@ -517,26 +517,24 @@ public final class JMLSpecExtractor implements SpecExtractor {
         for (ParameterDeclaration decl: pm.getParameters()) {
             paramNames.add(decl.getVariables().get(0).getName());
         }
-        List<String> jmlExprs = OpalResultProvider.getINST()
-                .getJMLAssignableExprs(pm.getContainerType().getSort().toString(), pm.getName(), paramNames);
+        String jmlExpr = OpalResultProvider.getINST()
+                .getJMLAssignableExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames);
         // Is Empty if the method is not even contextually sideeffect free, no useful assignable can be added
-        if (jmlExprs.isEmpty()) {
+        if (jmlExpr.isEmpty()) {
             return constructs;
         }
         // No existing behaviour
         if (constructs.isEmpty()) {
             TextualJMLSpecCase specCase = new TextualJMLSpecCase(ImmutableSLList.nil(), Behavior.NONE);
-            for (String expr: jmlExprs) {
-                specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(expr));
-            }
+            specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(jmlExpr));
             return constructs.append(specCase);
         }
-        // Extend possible existing behaviours
+        // Extend existing behaviours without assignable clause
         for (TextualJMLConstruct construct : constructs) {
-            if (construct instanceof TextualJMLSpecCase && ((TextualJMLSpecCase) construct).getAssignable().isEmpty()) {
+            if (construct instanceof TextualJMLSpecCase) {
                 TextualJMLSpecCase specCase = (TextualJMLSpecCase) construct;
-                for (String expr : jmlExprs) {
-                    specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(expr));
+                if (specCase.getAssignable().isEmpty()) {
+                    specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(jmlExpr));
                 }
             }
         }
