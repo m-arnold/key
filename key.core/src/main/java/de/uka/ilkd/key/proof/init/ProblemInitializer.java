@@ -22,6 +22,7 @@ import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.GenericSort;
 import de.uka.ilkd.key.logic.sort.Sort;
+import de.uka.ilkd.key.opal.OpalResultProvider;
 import de.uka.ilkd.key.parser.schemajava.SchemaJavaParser;
 import de.uka.ilkd.key.proof.Goal;
 import de.uka.ilkd.key.proof.JavaModel;
@@ -286,6 +287,7 @@ public final class ProblemInitializer {
             // support for single file loading
             final String[] cus = var.toArray(new String[0]);
 
+            OpalResultProvider.getINST().resetResults();
             if (StaticAnalysisSettings.getINST().anyAnalysisSelected()) {
                 OpalRunner opalRunner = new OpalRunner();
                 try {
