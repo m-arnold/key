@@ -52,14 +52,10 @@ public class JarProcessor {
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
         fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(new File(outputPath)));
 
-        for (String filePath: filesToCompile) {
-            Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(filePath);
-            JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
-            boolean success = task.call();
-            System.out.println("Filename: " + filePath + "| Success: " + success);
-            if (!success) {
-                diagnostics.getDiagnostics().stream().forEach(error -> OpalResultProvider.getINST().addCompileError(error.toString()));
-            }
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(filesToCompile);
+        JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
+        if (!task.call()) {
+            diagnostics.getDiagnostics().stream().forEach(error -> OpalResultProvider.getINST().addCompileError(error.toString()));
         }
         System.out.println("COMPILE FINISHED");
     }
