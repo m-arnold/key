@@ -140,6 +140,50 @@ task testRunAllFunProofs(type: Test) {
     }
 }
 
+task testRunAllFunProofsOpalAssignableClauseReduction(type: Test) {
+    systemProperties["useMethodPurityAnalysis"] =  "true"
+    systemProperties["useAssignableClauseReduction"] =  "true"
+
+    description 'Prove/reload all keyfiles tagged for regression testing'
+    group "verification"
+    filter {
+        includeTestsMatching "RunAllProofsFunctional"
+    }
+}
+
+task testRunAllFunProofsOpalAssignableClauseGeneration(type: Test) {
+    systemProperties["useMethodPurityAnalysis"] =  "true"
+    systemProperties["useAssignableClauseGeneration"] =  "true"
+
+    description 'Prove/reload all keyfiles tagged for regression testing'
+    group "verification"
+    filter {
+        includeTestsMatching "RunAllProofsFunctional"
+    }
+}
+
+task testRunAllFunProofsOpalHeapParameterRemoval(type: Test) {
+    systemProperties["useMethodPurityAnalysis"] =  "true"
+    systemProperties["useHeapParameterRemoval"] =  "true"
+
+    description 'Prove/reload all keyfiles tagged for regression testing'
+    group "verification"
+    filter {
+        includeTestsMatching "RunAllProofsFunctional"
+    }
+}
+
+task testRunAllFunProofsOpalRevisedHeapTheory(type: Test) {
+    systemProperties["useFieldImmutabilityAnalysis"] =  "true"
+    systemProperties["useRevisedHeapTheory"] =  "true"
+
+    description 'Prove/reload all keyfiles tagged for regression testing'
+    group "verification"
+    filter {
+        includeTestsMatching "RunAllProofsFunctional"
+    }
+}
+
 task testRunAllInfProofs(type: Test) {
     description 'Prove/reload all keyfiles tagged for regression testing'
     group "verification"
