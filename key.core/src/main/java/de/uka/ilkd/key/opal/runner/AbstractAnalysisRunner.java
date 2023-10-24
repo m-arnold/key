@@ -39,12 +39,12 @@ public abstract class AbstractAnalysisRunner {
                 .withValue(InitialEntryPointsKey$.MODULE$.ConfigKey(),
                         ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.AllEntryPointsFinder"))
                 .withValue(AllEntryPointsFinder$.MODULE$.ConfigKey(), ConfigValueFactory.fromAnyRef(true));
-        if (StaticAnalysisSettings.getINST().useCloseWorldAssumption()) {
+        if (StaticAnalysisSettings.useCloseWorldAssumption) {
             config = config.withValue("org.opalj.br.analyses.cg.ClassExtensibilityKey.analysis",
                     ConfigValueFactory.fromAnyRef("org.opalj.br.analyses.cg.ClassHierarchyIsNotExtensible"));
         }
 
-        if (StaticAnalysisSettings.getINST().analyzeJDKFiles()) {
+        if (StaticAnalysisSettings.analyzeJDKFiles) {
             // With JDK
             File[] classfiles = new File[] {new File(pathToJar)};
             File[] libFiles = new File[] {getJREFolder()};

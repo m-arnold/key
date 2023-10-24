@@ -13,13 +13,12 @@ public class OpalMethodPuritySetL1Action extends MainWindowAction{
         super(mainWindow);
         setName("Use L1");
         setTooltip("If ticked, Opal's Method Purity uses L1");
-        setSelected(StaticAnalysisSettings.getINST().getMethodPurityLevel() == AnalysisLevel.L1);
+        setSelected(StaticAnalysisSettings.methodPurityLevel == AnalysisLevel.L1);
         setEnabled(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.getINST().setMethodPurityLevel(AnalysisLevel.L1);
+        StaticAnalysisSettings.methodPurityLevel = AnalysisLevel.L1;
     }
 }

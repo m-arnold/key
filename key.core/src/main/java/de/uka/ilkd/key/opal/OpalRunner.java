@@ -10,15 +10,12 @@ public class OpalRunner {
 
     private String jarPath;
 
-    private StaticAnalysisSettings settings;
-
     public OpalRunner() {
-        settings = StaticAnalysisSettings.getINST();
         OpalResultProvider.getINST().resetResults();
     }
 
     public void run(String[] filesNames) {
-        if (!settings.anyAnalysisSelected()) {
+        if (!StaticAnalysisSettings.anyAnalysisSelected()) {
             System.out.println("No analyses selected!");
             return;
         }
@@ -33,12 +30,12 @@ public class OpalRunner {
     }
 
     private void runAnalyses() {
-        if (settings.useFieldImmutabilityAnalysis()) {
+        if (StaticAnalysisSettings.useFieldImmutabilityAnalysis) {
             System.out.println("Runs Field ImmutabilityAnalysis!");
             FieldImmutabilityAnalysisRunner runner = new FieldImmutabilityAnalysisRunner(jarPath);
             runner.run();
         }
-        if (settings.useMethodPurityAnalysis()) {
+        if (StaticAnalysisSettings.useMethodPurityAnalysis) {
             System.out.println("Runs Method Purity Analysis!");
             MethodPurityAnalysisRunner runner = new MethodPurityAnalysisRunner(jarPath);
             runner.run();

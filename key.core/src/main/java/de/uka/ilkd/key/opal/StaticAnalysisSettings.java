@@ -3,100 +3,39 @@ package de.uka.ilkd.key.opal;
 import de.uka.ilkd.key.opal.runner.AnalysisLevel;
 
 public class StaticAnalysisSettings {
-    private static StaticAnalysisSettings INST;
-    private boolean useFieldImmutabilityAnalysis;
-    private AnalysisLevel fieldImmutabilityLevel;
-    private boolean useMethodPurityAnalysis;
-    private AnalysisLevel methodPurityLevel;
+    public static boolean useFieldImmutabilityAnalysis = Boolean.valueOf(System.getProperty("useFieldImmutabilityAnalysis", "true"));
+    public static AnalysisLevel fieldImmutabilityLevel = AnalysisLevel.valueOf(System.getProperty("fieldImmutabilityLevel", "L1"));
+    public static boolean useMethodPurityAnalysis = Boolean.valueOf(System.getProperty("useMethodPurityAnalysis", "true"));
+    public static AnalysisLevel methodPurityLevel = AnalysisLevel.valueOf(System.getProperty("methodPurityLevel", "L1"));
 
-    private boolean useCloseWorldAssumption;
-    private boolean analyzeJDKFiles;
+    public static boolean useCloseWorldAssumption = Boolean.valueOf(System.getProperty("useCloseWorldAssumption", "false"));
+    public static boolean analyzeJDKFiles = Boolean.valueOf(System.getProperty("analyzeJDKFiles", "true"));
 
-    /**
-     * Maybe delete this one, default should be enough
-     *
-     * @param useFieldImmutabilityAnalysis
-     * @param useMethodPurityAnalysis
-     * @param useCloseWorldAssumption
-     * @param analyzeJDKFiles
-     */
-    private StaticAnalysisSettings(boolean useFieldImmutabilityAnalysis,
-                                   boolean useMethodPurityAnalysis,
-                                   boolean useCloseWorldAssumption,
-                                   boolean analyzeJDKFiles)
-    {
-        this.useFieldImmutabilityAnalysis = useFieldImmutabilityAnalysis;
-        this.useMethodPurityAnalysis = useMethodPurityAnalysis;
-        this.useCloseWorldAssumption = useCloseWorldAssumption;
-        this.analyzeJDKFiles = analyzeJDKFiles;
-    }
+    // Field Immutability Analysis Usescases:
+    private static boolean useRevisedHeapTheory = Boolean.valueOf(System.getProperty("useRevisedHeapTheory", "true"));
 
-    /**
-     * Default StaticAnalysisSettings...
-     */
-    private StaticAnalysisSettings() {
-        this.useFieldImmutabilityAnalysis = true;
-        this.useMethodPurityAnalysis = true;
-        this.useCloseWorldAssumption = false;
-        this.analyzeJDKFiles = true;
-        this.fieldImmutabilityLevel = AnalysisLevel.L1;
-        this.methodPurityLevel = AnalysisLevel.L1;
-    }
+    //Method Purity Analysis Usecases:
+    private static boolean useAssignableClauseGeneration = Boolean.valueOf(System.getProperty("useAssignableClauseGeneration", "true"));
+    private static boolean useHeapParameterRemoval = Boolean.valueOf(System.getProperty("useRemovalHeapParameter", "true"));
+    private static boolean useAssignableClauseReduction = Boolean.valueOf(System.getProperty("useReductionOfAssignable", "true"));
 
-    public static StaticAnalysisSettings getINST() {
-        if (INST == null) {
-            INST = new StaticAnalysisSettings();
-        }
-        return INST;
-    }
-
-    public boolean useFieldImmutabilityAnalysis() {
-        return useFieldImmutabilityAnalysis;
-    }
-
-    public boolean useMethodPurityAnalysis() {
-        return useMethodPurityAnalysis;
-    }
-
-    public boolean useCloseWorldAssumption() {
-        return useCloseWorldAssumption;
-    }
-
-    public boolean analyzeJDKFiles() { return analyzeJDKFiles;}
-
-    public AnalysisLevel getFieldImmutabilityLevel() {
-        return this.fieldImmutabilityLevel;
-    }
-
-    public AnalysisLevel getMethodPurityLevel() {
-        return this.methodPurityLevel;
-    }
-
-    public void setUseFieldImmutabilityAnalysis(boolean useFieldImmutabilityAnalysis) {
-        this.useFieldImmutabilityAnalysis = useFieldImmutabilityAnalysis;
-    }
-
-    public void setUseMethodPurityAnalysis(boolean useMethodPurityAnalysis) {
-        this.useMethodPurityAnalysis = useMethodPurityAnalysis;
-    }
-
-    public void setFieldImmutabilityLevel(AnalysisLevel level) {
-        this.fieldImmutabilityLevel = level;
-    }
-
-    public void setMethodPurityLevel(AnalysisLevel level) {
-        this.methodPurityLevel = level;
-    }
-
-    public void setUseCloseWorldAssumption(boolean useCloseWorldAssumption) {
-        this.useCloseWorldAssumption = useCloseWorldAssumption;
-    }
-
-    public void setAnalyzeJDKFiles(boolean analyzeJDKFiles) {
-        this.analyzeJDKFiles = analyzeJDKFiles;
-    }
-
-    public boolean anyAnalysisSelected() {
+    public static boolean anyAnalysisSelected() {
         return useFieldImmutabilityAnalysis || useMethodPurityAnalysis; // | ... Add new analyses here...
+    }
+
+    public static boolean useAssignableClauseGeneration() {
+        return useMethodPurityAnalysis && useAssignableClauseGeneration;
+    }
+
+    public static boolean useHeapParameterRemoval() {
+        return useMethodPurityAnalysis && useHeapParameterRemoval;
+    }
+
+    public static boolean useAssignableClauseReduction() {
+        return useMethodPurityAnalysis && useAssignableClauseReduction;
+    }
+
+    public static boolean useRevisedHeapTheory() {
+        return useFieldImmutabilityAnalysis && useRevisedHeapTheory;
     }
 }

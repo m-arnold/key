@@ -288,7 +288,7 @@ public final class ProblemInitializer {
             final String[] cus = var.toArray(new String[0]);
 
             OpalResultProvider.getINST().resetResults();
-            if (StaticAnalysisSettings.getINST().anyAnalysisSelected()) {
+            if (StaticAnalysisSettings.anyAnalysisSelected()) {
                 OpalRunner opalRunner = new OpalRunner();
                 try {
                     reportStatus("Run Opal Analyses");

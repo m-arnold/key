@@ -12,13 +12,13 @@ public class OpalFieldImmutabilityAnalysisAction extends MainWindowAction {
         super(mainWindow);
         setName("Use Immutability Analyis");
         setTooltip("If ticked, Opal's Field Immutability Analysis is executed");
-        setSelected(StaticAnalysisSettings.getINST().useFieldImmutabilityAnalysis());
+        setSelected(StaticAnalysisSettings.useFieldImmutabilityAnalysis);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.getINST().setUseFieldImmutabilityAnalysis(b);
+        StaticAnalysisSettings.useFieldImmutabilityAnalysis = b;
     }
 
 }

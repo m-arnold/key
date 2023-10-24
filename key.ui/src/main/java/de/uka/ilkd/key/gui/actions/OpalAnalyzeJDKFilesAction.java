@@ -12,13 +12,13 @@ public class OpalAnalyzeJDKFilesAction extends MainWindowAction {
         super(mainWindow);
         setName("Analyze JDK Files");
         setTooltip("If ticked, Opal's also analyzes files provided by the JDK");
-        setSelected(StaticAnalysisSettings.getINST().analyzeJDKFiles());
+        setSelected(StaticAnalysisSettings.analyzeJDKFiles);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.getINST().setAnalyzeJDKFiles(b);
+        StaticAnalysisSettings.analyzeJDKFiles = b;
     }
 
 }

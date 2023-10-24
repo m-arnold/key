@@ -13,13 +13,12 @@ public class OpalFieldImmutabilitySetL1Action extends MainWindowAction {
         super(mainWindow);
         setName("Use L1");
         setTooltip("If ticked, Opal's Field Immutability Analysis uses L1");
-        setSelected(StaticAnalysisSettings.getINST().getMethodPurityLevel() == AnalysisLevel.L1);
+        setSelected(StaticAnalysisSettings.methodPurityLevel == AnalysisLevel.L1);
         setEnabled(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.getINST().setFieldImmutabilityLevel(AnalysisLevel.L1);
+        StaticAnalysisSettings.fieldImmutabilityLevel = AnalysisLevel.L1;
     }
 }

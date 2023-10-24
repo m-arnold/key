@@ -12,13 +12,13 @@ public class OpalClosedWorldAction extends MainWindowAction {
         super(mainWindow);
         setName("Use Closed World Assumption");
         setTooltip("If ticked, Opal's uses closed world assumption");
-        setSelected(StaticAnalysisSettings.getINST().useCloseWorldAssumption());
+        setSelected(StaticAnalysisSettings.useCloseWorldAssumption);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.getINST().setUseCloseWorldAssumption(b);
+        StaticAnalysisSettings.useCloseWorldAssumption = b;
     }
 
 }

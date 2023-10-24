@@ -13,13 +13,12 @@ public class OpalMethodPuritySetL0Action extends MainWindowAction{
         super(mainWindow);
         setName("Use L0");
         setTooltip("If ticked, Opal's Method Purity uses L0");
-        setSelected(StaticAnalysisSettings.getINST().getMethodPurityLevel() == AnalysisLevel.L0);
+        setSelected(StaticAnalysisSettings.methodPurityLevel == AnalysisLevel.L0);
         setEnabled(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.getINST().setMethodPurityLevel(AnalysisLevel.L0);
+        StaticAnalysisSettings.methodPurityLevel = AnalysisLevel.L0;
     }
 }

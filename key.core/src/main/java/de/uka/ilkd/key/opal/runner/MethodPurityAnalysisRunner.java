@@ -76,7 +76,7 @@ public class MethodPurityAnalysisRunner  extends AbstractAnalysisRunner {
 
     @Override
     Seq<ComputationSpecification<FPCFAnalysis>> determineAnalyses() {
-        switch (StaticAnalysisSettings.getINST().getMethodPurityLevel()) {
+        switch (StaticAnalysisSettings.methodPurityLevel) {
             case L2:
                 return CollectionConverters.asScala(L2_CONF).toSeq();
             case L1:
