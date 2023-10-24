@@ -18,6 +18,7 @@ import de.uka.ilkd.key.logic.label.OriginTermLabel.Origin;
 import de.uka.ilkd.key.logic.label.OriginTermLabel.SpecType;
 import de.uka.ilkd.key.logic.label.SymbolicExecutionTermLabel;
 import de.uka.ilkd.key.logic.op.*;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.rule.metaconstruct.ConstructorCall;
 import de.uka.ilkd.key.rule.metaconstruct.CreateObject;
@@ -228,7 +229,8 @@ public class FunctionalOperationContractPO extends AbstractOperationPO implement
         Term frameTerm = null;
 
         String[] split = getContract().getTarget().toString().split("::");
-        boolean isSideEffectFree = OpalResultProvider.getINST().isSideEffectFree(split[0], split[1]);
+        boolean isSideEffectFree = OpalResultProvider.getINST().isSideEffectFree(split[0], split[1])
+                && StaticAnalysisSettings.useAssignableClauseReduction();
 
         for (LocationVariable heap : modHeaps) {
             final Term ft;

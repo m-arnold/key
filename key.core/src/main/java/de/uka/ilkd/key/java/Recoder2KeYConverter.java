@@ -35,6 +35,7 @@ import de.uka.ilkd.key.logic.VariableNamer;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.Sort;
 import de.uka.ilkd.key.opal.OpalResultProvider;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.util.Debug;
 import de.uka.ilkd.key.util.MiscTools;
 
@@ -1179,16 +1180,18 @@ public class Recoder2KeYConverter {
             assert containerType != null;
             final Type returnType = md.getReturnType();
             // may be null for a void method
-            boolean isPure = OpalResultProvider.getINST().isPureMethod(containerType.getSort().toString(), methDecl.getName());
-            int heapCount = isPure ? 0 : (heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
-
             final KeYJavaType returnKJT =
-                returnType == null ? KeYJavaType.VOID_TYPE : getKeYJavaType(returnType);
-//            result = new ProgramMethod(methDecl, containerType, returnKJT, positionInfo(md),
-//                    heapSort, heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
-            result = new ProgramMethod(methDecl, containerType, returnKJT, positionInfo(md),
-                    heapSort, heapLDT == null ? 1 : heapCount);
+                    returnType == null ? KeYJavaType.VOID_TYPE : getKeYJavaType(returnType);
 
+            if (StaticAnalysisSettings.useHeapParameterRemoval()) {
+                boolean isPure = OpalResultProvider.getINST().isPureMethod(containerType.getSort().toString(), methDecl.getName());
+                int heapCount = isPure ? 0 : (heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
+                result = new ProgramMethod(methDecl, containerType, returnKJT, positionInfo(md),
+                        heapSort, heapLDT == null ? 1 : heapCount);
+            } else {
+                result = new ProgramMethod(methDecl, containerType, returnKJT, positionInfo(md),
+                        heapSort, heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
+            }
             insertToMap(md, result);
         }
         methodsDeclaring.remove(md);
@@ -1258,7 +1261,8 @@ public class Recoder2KeYConverter {
                 boolean isModel = false;
                 boolean isFinal = recoderVarSpec.isFinal();
                 String[] splitted = pen.toString().split("::");
-                boolean isImmutable = OpalResultProvider.getINST().isImmutableField(splitted[0], splitted[1]);
+                boolean isImmutable = OpalResultProvider.getINST().isImmutableField(splitted[0], splitted[1])
+                        && StaticAnalysisSettings.useRevisedHeapTheory();
                 for (recoder.java.declaration.Modifier mod : recoderVarSpec.getParent()
                         .getModifiers()) {
                     if (mod instanceof de.uka.ilkd.key.java.recoderext.Model) {

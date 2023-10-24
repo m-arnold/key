@@ -24,6 +24,7 @@ import de.uka.ilkd.key.logic.label.TermLabel;
 import de.uka.ilkd.key.logic.op.IProgramMethod;
 import de.uka.ilkd.key.logic.op.LocationVariable;
 import de.uka.ilkd.key.logic.op.ProgramVariable;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.parser.Location;
 import de.uka.ilkd.key.speclang.*;
 import de.uka.ilkd.key.speclang.jml.pretranslation.*;
@@ -363,9 +364,10 @@ public final class JMLSpecExtractor implements SpecExtractor {
         } else {
             constructs = ImmutableSLList.nil();
         }
-        // Solution 1 to generate assignables:
         // Extend constructs assignable clauses based on Opal Purity Level
-        constructs = addOpalAssignable(constructs, pm);
+        if (StaticAnalysisSettings.useAssignableClauseGeneration()) {
+            constructs = addOpalAssignable(constructs, pm);
+        }
 
         // create JML contracts out of constructs, add them to result
         TextualJMLConstruct[] constructsArray =

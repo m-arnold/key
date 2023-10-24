@@ -27,6 +27,7 @@ import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.ArraySort;
 import de.uka.ilkd.key.logic.sort.Sort;
 import de.uka.ilkd.key.opal.OpalResultProvider;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.proof.OpReplacer;
 import de.uka.ilkd.key.speclang.ClassAxiom;
 import de.uka.ilkd.key.speclang.HeapContext;
@@ -2017,9 +2018,11 @@ class Translator extends JmlParserBaseVisitor<Object> {
         }
         String className = this.containerType.getSort().toString();
         String methodName = this.method != null ? this.method.getName() : "";
-        Term OpalAssignable = OpalResultProvider.getINST().getAssignableTerm(className, methodName, tb, selfVar, paramVars);
-        if (!t.equals(tb.ff())) {
-            t = tb.intersect(OpalAssignable, t);
+        if (StaticAnalysisSettings.useAssignableClauseGeneration()) {
+            Term OpalAssignable = OpalResultProvider.getINST().getAssignableTerm(className, methodName, tb, selfVar, paramVars);
+            if (!t.equals(tb.ff())) {
+                t = tb.intersect(OpalAssignable, t);
+            }
         }
         for (LocationVariable heap : heaps) {
             contractClauses.add(ContractClauses.ASSIGNABLE, heap, t);
