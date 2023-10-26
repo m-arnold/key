@@ -33,6 +33,7 @@ import de.uka.ilkd.key.core.KeYSelectionEvent;
 import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.core.Main;
 import de.uka.ilkd.key.gui.actions.*;
+import de.uka.ilkd.key.gui.actions.opal.*;
 import de.uka.ilkd.key.gui.configuration.Config;
 import de.uka.ilkd.key.gui.docking.DockingHelper;
 import de.uka.ilkd.key.gui.extension.api.KeYGuiExtension;
@@ -1035,6 +1036,16 @@ public final class MainWindow extends JFrame {
         configurePurityAnalysis.add(purityL1);
         configurePurityAnalysis.add(purityL0);
         opal.add(configurePurityAnalysis);
+
+        // Configure Usecases for Method Purity Analysis
+        JMenu configurePurityUsecases = new JMenu("Configure Method Usescases");
+        JCheckBoxMenuItem purityUsecase1 = new JCheckBoxMenuItem(new OpalMethodPuritySetUseCaseAssignableReduction(this));
+        JCheckBoxMenuItem purityUsecase2 = new JCheckBoxMenuItem(new OpalMethodPuritySetUseCaseAssignableGeneration(this));
+        JCheckBoxMenuItem purityUsecase3 = new JCheckBoxMenuItem(new OpalMethodPuritySetUseCaseHeapParameterRemoval(this));
+        configurePurityUsecases.add(purityUsecase1);
+        configurePurityUsecases.add(purityUsecase2);
+        configurePurityUsecases.add(purityUsecase3);
+        opal.add(configurePurityUsecases);
 
         opal.addSeparator();
         JCheckBoxMenuItem analyzeJDKFiles = new JCheckBoxMenuItem(new OpalAnalyzeJDKFilesAction(this));

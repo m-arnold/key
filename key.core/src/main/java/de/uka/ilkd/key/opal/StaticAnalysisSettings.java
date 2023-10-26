@@ -35,6 +35,20 @@ public class StaticAnalysisSettings {
         return useMethodPurityAnalysis && useAssignableClauseReduction;
     }
 
+    // TODO: Refactor this! useAssignableClauseReduction() includes useMethodPurityAnalysis, this method does not!
+    // Unintuitive!
+    public static void setUseAssignableClauseReduction(boolean b) {
+        useAssignableClauseGeneration = b;
+    }
+
+    public static void setUseAssignableClauseGeneration(boolean b) {
+        useAssignableClauseGeneration = b;
+    }
+
+    public static void setUseHeapParameterRemoval(boolean b) {
+        useHeapParameterRemoval = b;
+    }
+
     public static boolean useRevisedHeapTheory() {
         return useFieldImmutabilityAnalysis && useRevisedHeapTheory;
     }
