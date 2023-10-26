@@ -1,6 +1,7 @@
-package de.uka.ilkd.key.gui.actions;
+package de.uka.ilkd.key.gui.actions.opal;
 
 import de.uka.ilkd.key.gui.MainWindow;
+import de.uka.ilkd.key.gui.actions.MainWindowAction;
 import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 
 import javax.swing.*;

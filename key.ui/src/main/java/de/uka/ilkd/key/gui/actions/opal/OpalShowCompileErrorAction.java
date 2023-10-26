@@ -1,8 +1,9 @@
-package de.uka.ilkd.key.gui.actions;
+package de.uka.ilkd.key.gui.actions.opal;
 
 import de.uka.ilkd.key.core.KeYSelectionEvent;
 import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.gui.MainWindow;
+import de.uka.ilkd.key.gui.actions.MainWindowAction;
 import de.uka.ilkd.key.opal.OpalResultProvider;
 
 import javax.swing.*;
