@@ -68,13 +68,15 @@ run {
     //args "--experimental"
 
     // Settings for Opal
-    systemProperties["useMethodPurityAnalysis"] =  "true"
+    systemProperties["useMethodPurityAnalysis"] =  "false"
     systemProperties["useAssignableClauseGeneration"] =  "true"
     systemProperties["useHeapParameterRemoval"] =  "true"
     systemProperties["useAssignableClauseReduction"] =  "true"
 
-    systemProperties["useFieldImmutabilityAnalysis"] =  "true"
+    systemProperties["useFieldImmutabilityAnalysis"] =  "false"
     systemProperties["useRevisedHeapTheory"] =  "true"
+
+    systemProperties["useExceptionUsageAnalysis"] =  "false"
 
     // this can be used to solve a problem where the OS hangs during debugging of popup menus
     // (see https://docs.oracle.com/javase/10/troubleshoot/awt.htm#JSTGD425)

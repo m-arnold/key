@@ -4,16 +4,15 @@ import de.uka.ilkd.key.core.KeYSelectionEvent;
 import de.uka.ilkd.key.core.KeYSelectionListener;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.gui.actions.MainWindowAction;
-import de.uka.ilkd.key.opal.result.FieldImmutabilityLevel;
-import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
+import de.uka.ilkd.key.opal.result.*;
+import de.uka.ilkd.key.opal.result.ThrownExceptionsResult.RuntimeException;
 import de.uka.ilkd.key.opal.OpalResultProvider;
-import de.uka.ilkd.key.opal.result.MethodPurityLevel;
-import de.uka.ilkd.key.opal.result.MethodPurityResult;
 import de.uka.ilkd.key.util.Pair;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class OpalShowResultsAction extends MainWindowAction {
 
@@ -64,6 +63,22 @@ public class OpalShowResultsAction extends MainWindowAction {
                 formattedResults.add((key.first + "." + key.second + "(...)" + " : " + level ));
             }
         }
+
+        ThrownExceptionsResult thrownExceptionsResult = OpalResultProvider.getINST().getThrownExceptionsResult();
+        if (thrownExceptionsResult != null) {
+            formattedResults.add("RuntimeException Analysis:");
+            formattedResults.add("\n");
+
+            for (Pair<String,String> key: thrownExceptionsResult.result.keySet()) {
+                Set<RuntimeException> set = thrownExceptionsResult.result.get(key);
+                formattedResults.add(key.first + "." + key.second + "(...)" + " throws:");
+                for (RuntimeException e : set) {
+                    formattedResults.add(""+ e.toString());
+                }
+                formattedResults.add("\n");
+            }
+        }
+
 
         Object[] formattedResult = formattedResults.toArray();
         JOptionPane.showMessageDialog(mainWindow, formattedResult, "Opal Results", JOptionPane.INFORMATION_MESSAGE);

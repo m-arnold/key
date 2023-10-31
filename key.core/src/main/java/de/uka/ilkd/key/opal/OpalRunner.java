@@ -1,5 +1,6 @@
 package de.uka.ilkd.key.opal;
 
+import de.uka.ilkd.key.opal.runner.ExceptionUsageAnalysisRunner;
 import de.uka.ilkd.key.opal.runner.FieldImmutabilityAnalysisRunner;
 import de.uka.ilkd.key.opal.runner.MethodPurityAnalysisRunner;
 
@@ -38,6 +39,11 @@ public class OpalRunner {
         if (StaticAnalysisSettings.useMethodPurityAnalysis) {
             System.out.println("Runs Method Purity Analysis!");
             MethodPurityAnalysisRunner runner = new MethodPurityAnalysisRunner(jarPath);
+            runner.run();
+        }
+        if (StaticAnalysisSettings.useExceptionUsageAnalysis) {
+            System.out.println("Runs Exception Usage Analysis");
+            ExceptionUsageAnalysisRunner runner = new ExceptionUsageAnalysisRunner(jarPath);
             runner.run();
         }
     }

@@ -6,6 +6,7 @@ public class StaticAnalysisSettings {
     public static boolean useFieldImmutabilityAnalysis = Boolean.valueOf(System.getProperty("useFieldImmutabilityAnalysis", "false"));
     public static AnalysisLevel fieldImmutabilityLevel = AnalysisLevel.valueOf(System.getProperty("fieldImmutabilityLevel", "L1"));
     public static boolean useMethodPurityAnalysis = Boolean.valueOf(System.getProperty("useMethodPurityAnalysis", "false"));
+    public static boolean useExceptionUsageAnalysis = Boolean.valueOf(System.getProperty("useExceptionUsageAnalysis", "false"));
     public static AnalysisLevel methodPurityLevel = AnalysisLevel.valueOf(System.getProperty("methodPurityLevel", "L1"));
 
     public static boolean useCloseWorldAssumption = Boolean.valueOf(System.getProperty("useCloseWorldAssumption", "false"));
@@ -20,7 +21,7 @@ public class StaticAnalysisSettings {
     private static boolean useAssignableClauseReduction = Boolean.valueOf(System.getProperty("useAssignableClauseReduction", "false"));
 
     public static boolean anyAnalysisSelected() {
-        return useFieldImmutabilityAnalysis || useMethodPurityAnalysis; // | ... Add new analyses here...
+        return useFieldImmutabilityAnalysis || useMethodPurityAnalysis || useExceptionUsageAnalysis; // | ... Add new analyses here...
     }
 
     public static boolean useAssignableClauseGeneration() {

@@ -1022,6 +1022,7 @@ public final class MainWindow extends JFrame {
         configureFieldImmutability.add(fiL0);
         opal.add(configureFieldImmutability);
 
+        opal.addSeparator();
         // Method Purity
         opal.add(new JCheckBoxMenuItem(new OpalMethodPurityAnalysisAction(this)));
         JMenu configurePurityAnalysis = new JMenu("Configure Method Purity Analysis");
@@ -1046,6 +1047,10 @@ public final class MainWindow extends JFrame {
         configurePurityUsecases.add(purityUsecase2);
         configurePurityUsecases.add(purityUsecase3);
         opal.add(configurePurityUsecases);
+
+        opal.addSeparator();
+        // Thrown Exception Analysis
+        opal.add(new JCheckBoxMenuItem(new OpalThrownExceptionAnalysisAction(this)));
 
         opal.addSeparator();
         JCheckBoxMenuItem analyzeJDKFiles = new JCheckBoxMenuItem(new OpalAnalyzeJDKFilesAction(this));

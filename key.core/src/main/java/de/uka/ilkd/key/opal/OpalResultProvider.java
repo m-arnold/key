@@ -5,6 +5,7 @@ import de.uka.ilkd.key.logic.TermBuilder;
 import de.uka.ilkd.key.logic.op.ProgramVariable;
 import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.opal.result.MethodPurityResult;
+import de.uka.ilkd.key.opal.result.ThrownExceptionsResult;
 import org.apache.commons.lang3.NotImplementedException;
 import org.key_project.util.collection.ImmutableList;
 
@@ -20,6 +21,7 @@ public class OpalResultProvider {
 
     private FieldImmutabilityResult fieldImmutabilityResult;
     private MethodPurityResult methodPurityResult;
+    private ThrownExceptionsResult thrownExceptionsResult;
 
     private boolean compilationFailed;
 
@@ -44,6 +46,14 @@ public class OpalResultProvider {
     }
     public MethodPurityResult getMethodPurityResult() {
         return methodPurityResult;
+    }
+
+    public void setThrownExceptionsResult(ThrownExceptionsResult thrownExceptionsResult) {
+        this.thrownExceptionsResult = thrownExceptionsResult;
+    }
+
+    public ThrownExceptionsResult getThrownExceptionsResult() {
+        return this.thrownExceptionsResult;
     }
 
     public boolean hasCompilationFailed() {
@@ -91,12 +101,13 @@ public class OpalResultProvider {
     public void resetResults() {
         fieldImmutabilityResult = null;
         methodPurityResult = null;
+        thrownExceptionsResult = null;
         compileErrors = null;
         compilationFailed = false;
     }
 
     public boolean hasResult() {
-        return fieldImmutabilityResult != null || methodPurityResult != null;
+        return fieldImmutabilityResult != null || methodPurityResult != null || thrownExceptionsResult != null;
     }
 
     public String getJMLAssignableExpr(String className, String methodName, List<String> paramNames) {
