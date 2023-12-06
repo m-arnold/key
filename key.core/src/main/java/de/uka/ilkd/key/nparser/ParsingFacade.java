@@ -13,16 +13,18 @@ import java.nio.charset.Charset;
 import java.nio.charset.CodingErrorAction;
 import java.nio.file.Path;
 import java.util.*;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import de.uka.ilkd.key.nparser.builder.ChoiceFinder;
 import de.uka.ilkd.key.proof.io.RuleSource;
+import de.uka.ilkd.key.settings.Configuration;
+import de.uka.ilkd.key.util.parsing.BuildingException;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +52,8 @@ public final class ParsingFacade {
      * @param <T> parse tree type
      * @return the {@link ParserRuleContext} inside the given ast object.
      */
-    @Nonnull
-    public static <T extends ParserRuleContext> T getParseRuleContext(@Nonnull KeyAst<T> ast) {
+    @NonNull
+    public static <T extends ParserRuleContext> T getParseRuleContext(@NonNull KeyAst<T> ast) {
         return ast.ctx;
     }
 
@@ -81,7 +83,7 @@ public final class ParsingFacade {
      *
      * @param ctxs non-null list
      */
-    public static @Nonnull ChoiceInformation getChoices(@Nonnull List<KeyAst.File> ctxs) {
+    public static @NonNull ChoiceInformation getChoices(@NonNull List<KeyAst.File> ctxs) {
         ChoiceInformation ci = new ChoiceInformation();
         ChoiceFinder finder = new ChoiceFinder(ci);
         ctxs.forEach(it -> it.accept(finder));
@@ -165,8 +167,8 @@ public final class ParsingFacade {
      * @param ctx non-null context
      * @return non-null string
      */
-    public static @Nonnull String getValueDocumentation(
-            @Nonnull KeYParser.String_valueContext ctx) {
+    public static @NonNull String getValueDocumentation(
+            KeYParser.@NonNull String_valueContext ctx) {
         return ctx.getText().substring(1, ctx.getText().length() - 1).replace("\\\"", "\"")
                 .replace("\\\\", "\\");
     }
@@ -192,4 +194,70 @@ public final class ParsingFacade {
         String value = docComment.getText();
         return value.substring(3, value.length() - 2);// remove leading "/*!" and trailing "*/"
     }
+
+
+    // region configuration
+    /**
+     * Parses a the configuration determined by the given {@code file}.
+     * A configuration corresponds to the grammar rule {@code cfile} in the {@code KeYParser.g4}.
+     *
+     * @param file non-null {@link Path} object
+     * @return monad that encapsluate the ParserRuleContext
+     * @throws IOException if the file is not found or not readable.
+     * @throws BuildingException if the file is syntactical broken.
+     */
+    public static KeyAst.ConfigurationFile parseConfigurationFile(Path file) throws IOException {
+        return parseConfigurationFile(CharStreams.fromPath(file));
+    }
+
+    /**
+     * @see #parseConfigurationFile(Path)
+     */
+    public static KeyAst.ConfigurationFile parseConfigurationFile(File file) throws IOException {
+        return parseConfigurationFile(file.toPath());
+    }
+
+    /**
+     * Parses a the configuration determined by the given {@code stream}.
+     * A configuration corresponds to the grammar rule {@code cfile} in the {@code KeYParser.g4}.
+     *
+     * @param file non-null {@link CharStream} object
+     * @return monad that encapsluate the ParserRuleContext
+     * @throws IOException if the file is not found or not readable.
+     * @throws BuildingException if the file is syntactical broken.
+     */
+    public static KeyAst.ConfigurationFile parseConfigurationFile(CharStream stream) {
+        KeYParser p = createParser(stream);
+        var ctx = p.cfile();
+        p.getErrorReporter().throwException();
+        return new KeyAst.ConfigurationFile(ctx);
+    }
+
+    /**
+     * Parses a the configuration determined by the given {@code stream}.
+     * A configuration corresponds to the grammar rule {@code cfile} in the {@code KeYParser.g4}.
+     *
+     * @param file non-null {@link CharStream} object
+     * @return a configration object with the data deserialize from the given file
+     * @throws IOException if the file is not found or not readable.
+     * @throws BuildingException if the file is syntactical broken.
+     */
+    public static Configuration readConfigurationFile(CharStream input) throws IOException {
+        return parseConfigurationFile(input).asConfiguration();
+    }
+
+    /**
+     * @see #readConfigurationFile(CharStream)
+     */
+    public static Configuration readConfigurationFile(Path file) throws IOException {
+        return readConfigurationFile(CharStreams.fromPath(file));
+    }
+
+    /**
+     * @see #readConfigurationFile(CharStream)
+     */
+    public static Configuration readConfigurationFile(File file) throws IOException {
+        return readConfigurationFile(file.toPath());
+    }
+    // endregion
 }

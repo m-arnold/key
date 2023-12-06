@@ -4,14 +4,14 @@
 package de.uka.ilkd.key.nparser;
 
 import java.net.URL;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
 
 import de.uka.ilkd.key.nparser.builder.BuilderHelpers;
 import de.uka.ilkd.key.nparser.builder.ChoiceFinder;
 import de.uka.ilkd.key.nparser.builder.FindProblemInformation;
 import de.uka.ilkd.key.nparser.builder.IncludeFinder;
 import de.uka.ilkd.key.proof.init.Includes;
+import de.uka.ilkd.key.settings.Configuration;
 import de.uka.ilkd.key.settings.ProofSettings;
 import de.uka.ilkd.key.util.Triple;
 
@@ -22,6 +22,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This is a monad around the parse tree. We use this class to hide the
@@ -35,10 +37,10 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * @version 1 (5.12.19)
  */
 public abstract class KeyAst<T extends ParserRuleContext> {
-    @Nonnull
+    @NonNull
     final T ctx;
 
-    protected KeyAst(@Nonnull T ctx) {
+    protected KeyAst(@NonNull T ctx) {
         this.ctx = ctx;
     }
 
@@ -58,10 +60,15 @@ public abstract class KeyAst<T extends ParserRuleContext> {
 
         public @Nullable ProofSettings findProofSettings() {
             ProofSettings settings = new ProofSettings(ProofSettings.DEFAULT_SETTINGS);
-            if (ctx.preferences() != null) {
-                String text =
-                    StringUtil.trim(ctx.preferences().s.getText(), '"').replace("\\\\:", ":");
-                settings.loadSettingsFromString(text);
+
+            if (ctx.preferences() != null && ctx.preferences().s != null) {
+                String text = StringUtil.trim(ctx.preferences().s.getText(), '"')
+                        .replace("\\\\:", ":");
+                settings.loadSettingsFromPropertyString(text);
+            } else if (ctx.preferences() != null && ctx.preferences().c != null) {
+                var cb = new ConfigurationBuilder();
+                var c = (Configuration) ctx.preferences().c.accept(cb);
+                settings.readSettings(c);
             }
             return settings;
         }
@@ -126,6 +133,22 @@ public abstract class KeyAst<T extends ParserRuleContext> {
             return "";
         }
     }
+
+    public static class ConfigurationFile extends KeyAst<KeYParser.CfileContext> {
+        ConfigurationFile(KeYParser.CfileContext ctx) {
+            super(ctx);
+        }
+
+        public Configuration asConfiguration() {
+            final var cfg = new ConfigurationBuilder();
+            List<Object> res = cfg.visitCfile(ctx);
+            if (!res.isEmpty())
+                return (Configuration) res.get(0);
+            else
+                throw new RuntimeException();
+        }
+    }
+
 
     public static class Term extends KeyAst<KeYParser.TermContext> {
         Term(KeYParser.TermContext ctx) {

@@ -7,8 +7,9 @@ package de.uka.ilkd.key.settings;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A base class for own settings based on properties.
@@ -16,6 +17,7 @@ import javax.annotation.Nullable;
  * @author weigl
  */
 public abstract class AbstractPropertiesSettings extends AbstractSettings {
+
     private static final String SET_DELIMITER = ",";
     private static final Function<String, Integer> parseInt = Integer::parseInt;
     private static final Function<String, Float> parseFloat = Float::parseFloat;
@@ -26,12 +28,23 @@ public abstract class AbstractPropertiesSettings extends AbstractSettings {
      * Properties stored in this settings object.
      * Updated by each {@link PropertyEntry} when a new non-null value is set.
      */
-    protected final Properties properties = new Properties();
+    protected Map<String, Object> properties = new TreeMap<>();
 
     /**
-     *
+     * category of this settings w/o brackets, e.g, "View" for "[View]".
+     * This will prefix to every property entry.
+     */
+    protected final String category;
+
+
+    /**
+     * Collection of listeners to notify when a setting changes its value.
      */
     protected final List<PropertyEntry<?>> propertyEntries = new LinkedList<>();
+
+    public AbstractPropertiesSettings(String category) {
+        this.category = category;
+    }
 
     private static Set<String> parseStringSet(String o) {
         Set<String> set = new TreeSet<>();
@@ -54,7 +67,7 @@ public abstract class AbstractPropertiesSettings extends AbstractSettings {
      * @return a possible empty, list of strings
      * @see #stringListToString(List)
      */
-    private static @Nonnull List<String> parseStringList(@Nonnull String str) {
+    private static @NonNull List<String> parseStringList(@NonNull String str) {
         // escape special chars (in particular the comma)
         return Arrays.stream(str.split(SET_DELIMITER)).map(SettingsConverter::decodeString)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -64,7 +77,7 @@ public abstract class AbstractPropertiesSettings extends AbstractSettings {
      * @param seq a string list
      * @return the strings concatenated with {@link #SET_DELIMITER}
      */
-    private static @Nonnull String stringListToString(@Nonnull List<String> seq) {
+    private static @NonNull String stringListToString(@NonNull List<String> seq) {
         // escape special chars (in particular the comma)
         return seq.stream().map(SettingsConverter::encodeString)
                 .collect(Collectors.joining(SET_DELIMITER));
@@ -79,15 +92,38 @@ public abstract class AbstractPropertiesSettings extends AbstractSettings {
         propertyEntries.forEach(it -> {
             String value = props.getProperty(it.getKey());
             if (value != null) {
-                properties.setProperty(it.getKey(), value);
+                it.parseFrom(value);
             }
         });
     }
 
     @Override
     public void writeSettings(Properties props) {
-        propertyEntries.forEach(PropertyEntry::update);
-        props.putAll(properties);
+        for (PropertyEntry<?> entry : propertyEntries) {
+            props.setProperty("[" + category + "]" + entry.getKey(), entry.value());
+        }
+    }
+
+
+    @Override
+    public void readSettings(Configuration props) {
+        var cat = props.getSection(category);
+        if (cat == null)
+            return;
+        propertyEntries.forEach(it -> {
+            final var value = cat.get(it.getKey());
+            if (value != null) {
+                properties.put(it.getKey(), value);
+            }
+        });
+    }
+
+    @Override
+    public void writeSettings(Configuration props) {
+        var cat = props.getOrCreateSection(category);
+        propertyEntries.forEach(it -> {
+            cat.set(it.getKey(), it.get());
+        });
     }
 
     protected PropertyEntry<Double> createDoubleProperty(String key, double defValue) {
@@ -135,7 +171,7 @@ public abstract class AbstractPropertiesSettings extends AbstractSettings {
      * @param defValue a default value
      * @return returns a {@link PropertyEntry}
      */
-    protected PropertyEntry<List<String>> createStringListProperty(@Nonnull String key,
+    protected PropertyEntry<List<String>> createStringListProperty(@NonNull String key,
             @Nullable String defValue) {
         PropertyEntry<List<String>> pe = new DefaultPropertyEntry<>(key, parseStringList(defValue),
             AbstractPropertiesSettings::parseStringList,
@@ -195,28 +231,28 @@ public abstract class AbstractPropertiesSettings extends AbstractSettings {
             T old = get();
             // only store non-null values
             if (value != null) {
-                properties.setProperty(key, toString.apply(value));
+                properties.put(key, value);
                 firePropertyChange(key, old, value);
             }
         }
 
         @Override
         public T get() {
-            String v = properties.getProperty(key);
+            var v = properties.getOrDefault(key, defaultValue);
             if (v == null) {
                 return defaultValue;
             } else {
-                return convert.apply(v);
+                return (T) v;
             }
         }
 
         @Override
         public String value() {
-            String v = properties.getProperty(key);
+            var v = get();
             if (v == null) {
                 return toString.apply(defaultValue);
             } else {
-                return v;
+                return toString.apply(v);
             }
         }
     }
