@@ -169,11 +169,21 @@ public final class QueryAxiom extends ClassAxiom {
                 update = tb.parallel(update, u);
             }
         }
-        if (target.getHeapCount(services) > 0) {
+        if (update != null) {
             update = target.isStatic() ? update
                     : tb.parallel(update, tb.elementary(selfProgSV, tb.var(selfSV)));
             for (int i = 0; i < paramSVs.length; i++) {
                 update = tb.parallel(update, tb.elementary(paramProgSVs[i], tb.var(paramSVs[i])));
+            }
+        } else {
+            // Only the case, if queryAxiom signature has no heap parameter (due to opal analysis)
+            update = target.isStatic() ? update : tb.elementary(selfProgSV, tb.var(selfSV));
+            for (int i = 0; i < paramSVs.length; i++) {
+                if (update == null) {
+                    update = tb.elementary(paramProgSVs[i], tb.var(paramSVs[i]));
+                } else {
+                    update = tb.parallel(update, tb.elementary(paramProgSVs[i], tb.var(paramSVs[i])));
+                }
             }
         }
         final Term post = tb.imp(tb.reachableValue(tb.var(resultProgSV), target.getReturnType()),

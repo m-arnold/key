@@ -620,8 +620,8 @@ public class QueryExpand implements BuiltInRule {
             }
             final Sort nullSort = goal.proof().getJavaInfo().nullSort();
             if (pm.isStatic()
-                    || (pmTerm.sub(1).sort().extendsTrans(goal.proof().getJavaInfo().objectSort())
-                            && !pmTerm.sub(1).sort().extendsTrans(nullSort))) {
+                    || (pmTerm.sub(pmTerm.arity() == 1 ? 0: 1).sort().extendsTrans(goal.proof().getJavaInfo().objectSort())
+                            && !pmTerm.sub(pmTerm.arity() == 1 ? 0: 1).sort().extendsTrans(nullSort))) {
                 PIOPathIterator it = pio.iterator();
                 while (it.next() != -1) {
                     Term focus = it.getSubTerm();
