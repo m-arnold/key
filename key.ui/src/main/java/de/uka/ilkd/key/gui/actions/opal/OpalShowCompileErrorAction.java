@@ -15,7 +15,7 @@ public class OpalShowCompileErrorAction extends MainWindowAction {
     public OpalShowCompileErrorAction(MainWindow mainWindow) {
         super(mainWindow);
         init();
-        setName("Shows Compile Errors");
+        setName("Show Compile Errors");
         setEnabled(false);
     }
 

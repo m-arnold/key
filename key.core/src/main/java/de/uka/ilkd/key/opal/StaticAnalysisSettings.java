@@ -20,7 +20,7 @@ public class StaticAnalysisSettings {
     public static boolean analyzeJDKFiles = Boolean.valueOf(readFromPropertyFiles("analyzeJDKFiles", "true"));
 
     // Field Immutability Analysis Usescases:
-    private static boolean useRevisedHeapTheory = Boolean.valueOf(readFromPropertyFiles("useRevisedHeapTheory", "false"));
+    private static boolean useRevisedHeapTheory = Boolean.valueOf(readFromPropertyFiles("useRevisedHeapTheory", "true"));
 
     //Method Purity Analysis Usecases:
     private static boolean useAssignableClauseGeneration = Boolean.valueOf(readFromPropertyFiles("useAssignableClauseGeneration", "false"));

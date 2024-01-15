@@ -19,7 +19,7 @@ public class OpalShowResultsAction extends MainWindowAction {
     public OpalShowResultsAction(MainWindow mainWindow) {
         super(mainWindow);
         init();
-        setName("Shows Opal results");
+        setName("Show Analyses results");
         setEnabled(false);
     }
 

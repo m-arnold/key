@@ -1079,6 +1079,10 @@ public final class MainWindow extends JFrame {
         opal.addSeparator();
         opal.add(new OpalShowCompileErrorAction(this));
         opal.add(new OpalShowResultsAction(this));
+
+        opal.addSeparator();
+        opal.add(new OpalShowTacletOptionSuggestionsAction(this));
+
         return opal;
     }
 
