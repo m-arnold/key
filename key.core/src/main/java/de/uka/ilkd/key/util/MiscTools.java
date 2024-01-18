@@ -29,10 +29,7 @@ import de.uka.ilkd.key.java.statement.MethodFrame;
 import de.uka.ilkd.key.java.visitor.JavaASTVisitor;
 import de.uka.ilkd.key.ldt.HeapLDT;
 import de.uka.ilkd.key.logic.*;
-import de.uka.ilkd.key.logic.op.IObserverFunction;
-import de.uka.ilkd.key.logic.op.LocationVariable;
-import de.uka.ilkd.key.logic.op.Modality;
-import de.uka.ilkd.key.logic.op.ProgramVariable;
+import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.Sort;
 import de.uka.ilkd.key.proof.Node;
 import de.uka.ilkd.key.proof.Proof;
@@ -239,8 +236,14 @@ public final class MiscTools {
      */
     public static ImmutableSet<Pair<Sort, IObserverFunction>> collectObservers(Term t) {
         ImmutableSet<Pair<Sort, IObserverFunction>> result = DefaultImmutableSet.nil();
+
         if (t.op() instanceof IObserverFunction obs) {
-            final Sort s = obs.isStatic() ? obs.getContainerType().getSort() : t.sub(1).sort();
+            final Sort s;
+            if (t.op() instanceof ProgramMethod pm) {
+                s = obs.isStatic() ? obs.getContainerType().getSort() : t.sub(pm.arity() - pm.getNumParams() == 1 ? 0 : 1).sort();
+            } else {
+                s = obs.isStatic() ? obs.getContainerType().getSort() : t.sub(1).sort();
+            }
             result = result.add(new Pair<>(s, obs));
         }
         for (Term sub : t.subs()) {
