@@ -25,6 +25,7 @@ import de.uka.ilkd.key.proof.Proof;
 import de.uka.ilkd.key.proof.rulefilter.SetRuleFilter;
 import de.uka.ilkd.key.rule.RuleApp;
 import de.uka.ilkd.key.rule.UseDependencyContractRule;
+import de.uka.ilkd.key.speclang.QueryAxiom;
 import de.uka.ilkd.key.strategy.feature.*;
 import de.uka.ilkd.key.strategy.feature.findprefix.FindPrefixRestrictionFeature;
 import de.uka.ilkd.key.strategy.quantifierHeuristics.ClausesSmallerThanFeature;
@@ -414,7 +415,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         final String queryAxProp =
             strategyProperties.getProperty(StrategyProperties.QUERYAXIOM_OPTIONS_KEY);
         switch (queryAxProp) {
-        case StrategyProperties.QUERYAXIOM_ON -> bindRuleSet(d, "query_axiom", longConst(-3000));
+        case StrategyProperties.QUERYAXIOM_ON -> bindRuleSet(d, "query_axiom", new QueryAxiomFeature(-3000, 500));
         case StrategyProperties.QUERYAXIOM_OFF -> bindRuleSet(d, "query_axiom", inftyConst());
         default -> throw new RuntimeException("Unexpected strategy property " + queryAxProp);
         }
