@@ -55,17 +55,14 @@ public class OpalShowTacletOptionSuggestionsAction extends MainWindowAction {
 
         ThrownExceptionsResult thrownExceptionsResult = OpalResultProvider.getINST().getThrownExceptionsResult();
         if (thrownExceptionsResult != null) {
-            boolean noExceptionsFound = thrownExceptionsResult.result.isEmpty();
             String tacletOption =
                     retrieveRuntimeExceptionOption(getMediator().getServices().getProof().getInitConfig().getActivatedChoices().toSet());
-
-            if (noExceptionsFound && (BAN.equals(tacletOption) || IGNORE.equals(tacletOption))) {
-                formattedResults.add("No runtime exceptions found by Opal. Use runtimeExceptions:allow for a stronger proof.");
+            if (thrownExceptionsResult.suggestRuntimeExceptionBan() && ALLOW.equals(tacletOption)) {
+                formattedResults.add("No for KeY relevant runtime exceptions found by Opal.");
+                formattedResults.add("Consider using runtimeExceptions:ban for an easier proof.");
+                formattedResults.add("If you trust Opal's analysis results you may use runtimeExceptions:ignore (unsound Java modeling)");
                 formattedResults.add("\n");
             }
-//            else if (!foundExceptions && (ALLOW.equals(tacletOption))) {
-//                formattedResults.add("No runtime exceptions found. Use runtimeException:ban or runtimeException:ignore for a faster proof.");
-//            }
         }
 
         if (formattedResults.isEmpty()) {
