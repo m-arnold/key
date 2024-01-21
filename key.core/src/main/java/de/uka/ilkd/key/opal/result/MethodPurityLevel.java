@@ -5,13 +5,14 @@ public enum MethodPurityLevel {
     CompileTimePure,    // CompileTimePure > Pure!
     Pure,
     SideEffectFree,
-    DPure,              // DPure > SideEffectFree??
+    DPure,
     DSideEffectFree,
     ExternallyPure,
     ExternallySideEffectFree,
     ContextuallyPure,
     ContextuallySideEffectFree,
     DContextuallyPure,
+    DExternallyPure,
     DContextuallySideEffectFree,
     ImpureByAnalysis
 }

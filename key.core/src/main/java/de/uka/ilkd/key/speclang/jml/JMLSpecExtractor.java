@@ -364,9 +364,9 @@ public final class JMLSpecExtractor implements SpecExtractor {
         } else {
             constructs = ImmutableSLList.nil();
         }
-        // Extend constructs assignable clauses based on Opal Purity Level
+        // Extend constructs with assignable and accessible clauses based on Opal's purity analysis
         if (StaticAnalysisSettings.useAssignableClauseGeneration()) {
-            constructs = addOpalAssignable(constructs, pm);
+            constructs = addOpalClauses(constructs, pm);
         }
 
         // create JML contracts out of constructs, add them to result
@@ -514,29 +514,45 @@ public final class JMLSpecExtractor implements SpecExtractor {
         return result;
     }
 
-    private ImmutableList<TextualJMLConstruct> addOpalAssignable(ImmutableList<TextualJMLConstruct> constructs, IProgramMethod pm) {
+    /**
+     * Adds assignable and accessible clauses based on Opal's purity analyses.
+     *
+     * @param constructs list of TextualJMLConstructs
+     * @param pm Program method
+     * @return updated list
+     */
+    private ImmutableList<TextualJMLConstruct> addOpalClauses(ImmutableList<TextualJMLConstruct> constructs, IProgramMethod pm) {
         List<String> paramNames = new ArrayList<>();
         for (ParameterDeclaration decl: pm.getParameters()) {
             paramNames.add(decl.getVariables().get(0).getName());
         }
-        String jmlExpr = OpalResultProvider.getINST()
+        final String assignableExpr = OpalResultProvider.getINST()
                 .getJMLAssignableExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames);
-        // Is Empty if the method is not even contextually sideeffect free, no useful assignable can be added
-        if (jmlExpr.isEmpty()) {
+        final String accessibleExpr = OpalResultProvider.getINST()
+                .getJMLAccessibleExpr(pm.getContainerType().getSort().toString(), pm.getName());
+        // Is Empty if the method is not even contextually sideeffect free, no useful assignable or accessible can be added
+        if (assignableExpr.isEmpty() && accessibleExpr.isEmpty()) {
             return constructs;
         }
-        // No existing behaviour
-        if (constructs.isEmpty()) {
+        // No existing TextualJMLSpecCase behaviour
+        // constructs.isEmpty() is not enough: E.g. the specification of an \\@ invariant right before a method is contained here.
+        if (constructs.stream().filter(c -> c instanceof TextualJMLSpecCase).findAny().isEmpty()) {
             TextualJMLSpecCase specCase = new TextualJMLSpecCase(ImmutableSLList.nil(), Behavior.NONE);
-            specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(jmlExpr));
+            specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(assignableExpr));
+            specCase.addClause(ACCESSIBLE, JmlFacade.parseExpr(accessibleExpr));
             return constructs.append(specCase);
         }
-        // Extend existing behaviours without assignable clause
+        // Extend existing behaviours without assignable or accessible clause
         for (TextualJMLConstruct construct : constructs) {
             if (construct instanceof TextualJMLSpecCase) {
                 TextualJMLSpecCase specCase = (TextualJMLSpecCase) construct;
                 if (specCase.getAssignable().isEmpty()) {
-                    specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(jmlExpr));
+                    specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(assignableExpr));
+                }
+                for (LocationVariable heap : HeapContext.getModHeaps(services, false)) {
+                    if (specCase.getAccessible(heap.name()).isEmpty()) {
+                        specCase.addClause(ACCESSIBLE, JmlFacade.parseExpr(accessibleExpr));
+                    }
                 }
             }
         }

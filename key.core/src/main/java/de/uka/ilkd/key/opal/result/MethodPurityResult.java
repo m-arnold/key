@@ -3,6 +3,7 @@ package de.uka.ilkd.key.opal.result;
 import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.TermBuilder;
 import de.uka.ilkd.key.logic.op.ProgramVariable;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.util.Pair;
 import org.key_project.util.collection.ImmutableList;
 
@@ -63,6 +64,24 @@ public class MethodPurityResult {
         return "";
     }
 
+    public String getJMLAccessibleExpr(String className, String methodName) {
+        MethodPurityLevel level = result.get(new Pair<>(className, methodName));
+        if (level != null) {
+            switch(level) {
+                case CompileTimePure:
+                case Pure:
+                case ExternallyPure:
+                case ContextuallyPure:
+                case DPure:
+                case DExternallyPure:
+                case DContextuallyPure:
+                    return "\\nothing";
+            }
+        }
+        return "";
+    }
+
+
     public Term getAssignableTerm(String className, String methodName, TermBuilder tb, ProgramVariable selfvar, ImmutableList<ProgramVariable> parameters) {
         MethodPurityLevel level = result.get(new Pair<>(className, methodName));
         if (level != null) {
@@ -81,6 +100,23 @@ public class MethodPurityResult {
                         res = tb.union(res,tb.allFields(tb.var(var)));
                     }
                     return res;
+            }
+        }
+        return tb.allLocs();
+    }
+
+    public Term getAccessibleTerm(String className, String methodName, TermBuilder tb) {
+        MethodPurityLevel level = result.get(new Pair<>(className, methodName));
+        if (level != null) {
+            switch(level) {
+                case CompileTimePure:
+                case Pure:
+                case ExternallyPure:
+                case ContextuallyPure:
+                case DPure:
+                case DExternallyPure:
+                case DContextuallyPure:
+                    return tb.empty();
             }
         }
         return tb.allLocs();

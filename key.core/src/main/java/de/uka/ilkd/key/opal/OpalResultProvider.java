@@ -117,10 +117,24 @@ public class OpalResultProvider {
         return methodPurityResult.getJMLAssignableExpr(className, methodName, paramNames);
     }
 
+    public String getJMLAccessibleExpr(String className, String methodName) {
+        if (methodPurityResult == null) {
+            return "";
+        }
+        return methodPurityResult.getJMLAccessibleExpr(className, methodName);
+    }
+
     public Term getAssignableTerm(String classname, String methodname, TermBuilder tb, ProgramVariable selfvar, ImmutableList<ProgramVariable> parameters) {
         if (methodPurityResult == null) {
             return tb.allLocs();
         }
         return methodPurityResult.getAssignableTerm(classname, methodname, tb, selfvar, parameters);
+    }
+
+    public Term getAccessibleTerm(String classname, String methodname, TermBuilder tb) {
+        if (methodPurityResult == null) {
+            return tb.allLocs();
+        }
+        return methodPurityResult.getAccessibleTerm(classname, methodname, tb);
     }
 }

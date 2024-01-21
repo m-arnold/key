@@ -1987,6 +1987,14 @@ class Translator extends JmlParserBaseVisitor<Object> {
         }
         final Term term = requireNonNull(accept(ctx.storeRefUnion()));
         Term t = termFactory.accessible(term);
+        String className = this.containerType.getSort().toString();
+        String methodName = this.method != null ? this.method.getName() : "";
+        if (StaticAnalysisSettings.useAssignableClauseGeneration()) {
+            Term OpalAccessible = OpalResultProvider.getINST().getAccessibleTerm(className, methodName, tb);
+            if (!t.equals(tb.ff())) {
+                t = tb.intersect(OpalAccessible, t);
+            }
+        }
         LocationVariable[] heaps = visitTargetHeap(ctx.targetHeap());
         for (LocationVariable heap : heaps) {
             contractClauses.add(ContractClauses.ACCESSIBLE, heap, t);
