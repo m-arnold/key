@@ -24,6 +24,7 @@ import de.uka.ilkd.key.logic.label.TermLabel;
 import de.uka.ilkd.key.logic.op.IProgramMethod;
 import de.uka.ilkd.key.logic.op.LocationVariable;
 import de.uka.ilkd.key.logic.op.ProgramVariable;
+import de.uka.ilkd.key.opal.FrameOptimizer;
 import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.parser.Location;
 import de.uka.ilkd.key.speclang.*;
@@ -35,7 +36,6 @@ import de.uka.ilkd.key.speclang.njml.PreParser;
 import de.uka.ilkd.key.speclang.translation.SLTranslationException;
 import de.uka.ilkd.key.speclang.translation.SLWarningException;
 
-import de.uka.ilkd.key.opal.OpalResultProvider;
 import org.key_project.util.collection.*;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -365,7 +365,7 @@ public final class JMLSpecExtractor implements SpecExtractor {
             constructs = ImmutableSLList.nil();
         }
         // Extend constructs with assignable and accessible clauses based on Opal's purity analysis
-        if (StaticAnalysisSettings.useAssignableClauseGeneration()) {
+        if (StaticAnalysisSettings.useAssignableClauseOptimization() || StaticAnalysisSettings.useAccessibleClauseOptimization()) {
             constructs = addOpalClauses(constructs, pm);
         }
 
@@ -526,11 +526,14 @@ public final class JMLSpecExtractor implements SpecExtractor {
         for (ParameterDeclaration decl: pm.getParameters()) {
             paramNames.add(decl.getVariables().get(0).getName());
         }
-        final String assignableExpr = OpalResultProvider.getINST()
-                .getJMLAssignableExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames);
-        final String accessibleExpr = OpalResultProvider.getINST()
-                .getJMLAccessibleExpr(pm.getContainerType().getSort().toString(), pm.getName());
-        // Is Empty if the method is not even contextually sideeffect free, no useful assignable or accessible can be added
+
+        FrameOptimizer optimizer = FrameOptimizer.INST();
+        final String assignableExpr = StaticAnalysisSettings.useAssignableClauseOptimization() ?
+                optimizer.getJMLAssignableExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames) : "";
+        final String accessibleExpr = StaticAnalysisSettings.useAccessibleClauseOptimization() ?
+                optimizer.getJMLAccessibleExpr(pm.getContainerType().getSort().toString(), pm.getName()) : "";
+
+        // Is Empty if no usecase is selected or if the method is not even contextually sideeffect free, no useful assignable or accessible can be added
         if (assignableExpr.isEmpty() && accessibleExpr.isEmpty()) {
             return constructs;
         }
@@ -538,19 +541,23 @@ public final class JMLSpecExtractor implements SpecExtractor {
         // constructs.isEmpty() is not enough: E.g. the specification of an \\@ invariant right before a method is contained here.
         if (constructs.stream().filter(c -> c instanceof TextualJMLSpecCase).findAny().isEmpty()) {
             TextualJMLSpecCase specCase = new TextualJMLSpecCase(ImmutableSLList.nil(), Behavior.NONE);
-            specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(assignableExpr));
-            specCase.addClause(ACCESSIBLE, JmlFacade.parseExpr(accessibleExpr));
+            if (!assignableExpr.isEmpty()) {
+                specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(assignableExpr));
+            }
+            if (!accessibleExpr.isEmpty()) {
+                specCase.addClause(ACCESSIBLE, JmlFacade.parseExpr(accessibleExpr));
+            }
             return constructs.append(specCase);
         }
         // Extend existing behaviours without assignable or accessible clause
         for (TextualJMLConstruct construct : constructs) {
             if (construct instanceof TextualJMLSpecCase) {
                 TextualJMLSpecCase specCase = (TextualJMLSpecCase) construct;
-                if (specCase.getAssignable().isEmpty()) {
+                if (specCase.getAssignable().isEmpty() && !assignableExpr.isEmpty()) {
                     specCase.addClause(ASSIGNABLE, JmlFacade.parseExpr(assignableExpr));
                 }
                 for (LocationVariable heap : HeapContext.getModHeaps(services, false)) {
-                    if (specCase.getAccessible(heap.name()).isEmpty()) {
+                    if (specCase.getAccessible(heap.name()).isEmpty() && !accessibleExpr.isEmpty()) {
                         specCase.addClause(ACCESSIBLE, JmlFacade.parseExpr(accessibleExpr));
                     }
                 }

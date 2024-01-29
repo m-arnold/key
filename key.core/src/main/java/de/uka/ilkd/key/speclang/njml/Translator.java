@@ -24,7 +24,7 @@ import de.uka.ilkd.key.logic.*;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.ArraySort;
 import de.uka.ilkd.key.logic.sort.Sort;
-import de.uka.ilkd.key.opal.OpalResultProvider;
+import de.uka.ilkd.key.opal.FrameOptimizer;
 import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.proof.OpReplacer;
 import de.uka.ilkd.key.speclang.ClassAxiom;
@@ -1987,13 +1987,8 @@ class Translator extends JmlParserBaseVisitor<Object> {
         }
         final Term term = requireNonNull(accept(ctx.storeRefUnion()));
         Term t = termFactory.accessible(term);
-        String className = this.containerType.getSort().toString();
-        String methodName = this.method != null ? this.method.getName() : "";
-        if (StaticAnalysisSettings.useAssignableClauseGeneration()) {
-            Term OpalAccessible = OpalResultProvider.getINST().getAccessibleTerm(className, methodName, tb);
-            if (!t.equals(tb.ff())) {
-                t = tb.intersect(OpalAccessible, t);
-            }
+        if (StaticAnalysisSettings.useAccessibleClauseOptimization() && !t.equals(tb.ff())) {
+                t = FrameOptimizer.INST().optimizeAccessible(t, method, tb);
         }
         LocationVariable[] heaps = visitTargetHeap(ctx.targetHeap());
         for (LocationVariable heap : heaps) {
@@ -2013,13 +2008,9 @@ class Translator extends JmlParserBaseVisitor<Object> {
             assert storeRef != null;
             t = termFactory.assignable(storeRef);
         }
-        String className = this.containerType.getSort().toString();
-        String methodName = this.method != null ? this.method.getName() : "";
-        if (StaticAnalysisSettings.useAssignableClauseGeneration()) {
-            Term OpalAssignable = OpalResultProvider.getINST().getAssignableTerm(className, methodName, tb, selfVar, paramVars);
-            if (!t.equals(tb.ff())) {
-                t = tb.intersect(OpalAssignable, t);
-            }
+        if (StaticAnalysisSettings.useAssignableClauseOptimization()
+                && !ctx.ASSIGNABLE().getText().equals("assignable_free") && !t.equals(tb.ff())) {
+            t = FrameOptimizer.INST().optimizeAssignable(t, services, this.method, tb, selfVar, paramVars);
         }
         for (LocationVariable heap : heaps) {
             contractClauses.add(ContractClauses.ASSIGNABLE, heap, t);

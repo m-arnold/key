@@ -10,9 +10,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
-public class OpalShowCompileErrorAction extends MainWindowAction {
+public class ShowCompileErrorAction extends MainWindowAction {
 
-    public OpalShowCompileErrorAction(MainWindow mainWindow) {
+    public ShowCompileErrorAction(MainWindow mainWindow) {
         super(mainWindow);
         init();
         setName("Show Compile Errors");
