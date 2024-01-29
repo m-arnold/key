@@ -1043,12 +1043,12 @@ public final class MainWindow extends JFrame {
         JMenu opal = new JMenu("Opal");
 
         // Field Assignability
-        opal.add(new JCheckBoxMenuItem(new OpalFieldImmutabilityAnalysisAction(this)));
+        opal.add(new JCheckBoxMenuItem(new FieldImmutabilityAnalysisAction(this)));
         JMenu configureFieldImmutability = new JMenu("Configure Field Immutability Analysis");
         ButtonGroup group1 = new ButtonGroup();
-        JCheckBoxMenuItem fiL2 = new JCheckBoxMenuItem(new OpalMethodPuritySetL2Action(this));
-        JCheckBoxMenuItem fiL1 = new JCheckBoxMenuItem(new OpalMethodPuritySetL1Action(this));
-        JCheckBoxMenuItem fiL0 = new JCheckBoxMenuItem(new OpalMethodPuritySetL0Action(this));
+        JCheckBoxMenuItem fiL2 = new JCheckBoxMenuItem(new CiFiL2Action(this));
+        JCheckBoxMenuItem fiL1 = new JCheckBoxMenuItem(new CiFiL1Action(this));
+        JCheckBoxMenuItem fiL0 = new JCheckBoxMenuItem(new CiFiL0Action(this));
         group1.add(fiL2);
         group1.add(fiL1);
         group1.add(fiL0);
@@ -1059,12 +1059,12 @@ public final class MainWindow extends JFrame {
 
         opal.addSeparator();
         // Method Purity
-        opal.add(new JCheckBoxMenuItem(new OpalMethodPurityAnalysisAction(this)));
+        opal.add(new JCheckBoxMenuItem(new MethodPurityAnalysisAction(this)));
         JMenu configurePurityAnalysis = new JMenu("Configure Method Purity Analysis");
         ButtonGroup group2 = new ButtonGroup();
-        JCheckBoxMenuItem purityL2 = new JCheckBoxMenuItem(new OpalMethodPuritySetL2Action(this));
-        JCheckBoxMenuItem purityL1 = new JCheckBoxMenuItem(new OpalMethodPuritySetL1Action(this));
-        JCheckBoxMenuItem purityL0 = new JCheckBoxMenuItem(new OpalMethodPuritySetL0Action(this));
+        JCheckBoxMenuItem purityL2 = new JCheckBoxMenuItem(new OpiumL2Action(this));
+        JCheckBoxMenuItem purityL1 = new JCheckBoxMenuItem(new OpiumL1Action(this));
+        JCheckBoxMenuItem purityL0 = new JCheckBoxMenuItem(new OpiumL0Action(this));
         group2.add(purityL2);
         group2.add(purityL1);
         group2.add(purityL0);
@@ -1075,30 +1075,45 @@ public final class MainWindow extends JFrame {
 
         // Configure Usecases for Method Purity Analysis
         JMenu configurePurityUsecases = new JMenu("Configure Method Usescases");
-        JCheckBoxMenuItem purityUsecase1 = new JCheckBoxMenuItem(new OpalMethodPuritySetUseCaseAssignableReduction(this));
-        JCheckBoxMenuItem purityUsecase2 = new JCheckBoxMenuItem(new OpalMethodPuritySetUseCaseAssignableGeneration(this));
-        JCheckBoxMenuItem purityUsecase3 = new JCheckBoxMenuItem(new OpalMethodPuritySetUseCaseHeapParameterRemoval(this));
+//        JCheckBoxMenuItem purityUsecase1 = new JCheckBoxMenuItem(new OpalMethodPuritySetUseCaseAssignableReduction(this));
+        JCheckBoxMenuItem purityUsecase1 = new JCheckBoxMenuItem(new AssignableOptimizationAction(this));
+        JMenu configureAssignableOptimization = new JMenu("Configure Assignable Optimization");
+        ButtonGroup group3 = new ButtonGroup();
+        JCheckBoxMenuItem replace = new JCheckBoxMenuItem(new ModeReplaceAction(this));
+        JCheckBoxMenuItem intersect = new JCheckBoxMenuItem(new ModeIntersectAction(this));
+        JCheckBoxMenuItem trustOpal = new JCheckBoxMenuItem(new TrustOpalAction(this));
+        group3.add(replace);
+        group3.add(intersect);
+        configureAssignableOptimization.add(replace);
+        configureAssignableOptimization.add(intersect);
+        configureAssignableOptimization.addSeparator();
+        configureAssignableOptimization.add(trustOpal);
+
+        JCheckBoxMenuItem purityUsecase2 = new JCheckBoxMenuItem(new AccessibleOptimizationAction(this));
+        JCheckBoxMenuItem purityUsecase3 = new JCheckBoxMenuItem(new HeapParamRemovalAction(this));
+//        configurePurityUsecases.add(purityUsecase1);
         configurePurityUsecases.add(purityUsecase1);
+        configurePurityUsecases.add(configureAssignableOptimization);
         configurePurityUsecases.add(purityUsecase2);
         configurePurityUsecases.add(purityUsecase3);
         opal.add(configurePurityUsecases);
 
         opal.addSeparator();
         // Thrown Exception Analysis
-        opal.add(new JCheckBoxMenuItem(new OpalThrownExceptionAnalysisAction(this)));
+        opal.add(new JCheckBoxMenuItem(new ThrownExceptionAnalysisAction(this)));
 
         opal.addSeparator();
-        JCheckBoxMenuItem analyzeJDKFiles = new JCheckBoxMenuItem(new OpalAnalyzeJDKFilesAction(this));
+        JCheckBoxMenuItem analyzeJDKFiles = new JCheckBoxMenuItem(new AnalyzeJDKFilesAction(this));
         opal.add(analyzeJDKFiles);
-        JCheckBoxMenuItem closedWorldAssumption = new JCheckBoxMenuItem(new OpalClosedWorldAction(this));
+        JCheckBoxMenuItem closedWorldAssumption = new JCheckBoxMenuItem(new ClosedWorldAction(this));
         opal.add(closedWorldAssumption);
 
         opal.addSeparator();
-        opal.add(new OpalShowCompileErrorAction(this));
-        opal.add(new OpalShowResultsAction(this));
+        opal.add(new ShowCompileErrorAction(this));
+        opal.add(new ShowResultsAction(this));
 
         opal.addSeparator();
-        opal.add(new OpalShowTacletOptionSuggestionsAction(this));
+        opal.add(new TacletOptionSuggestionsAction(this));
 
         return opal;
     }

@@ -13,13 +13,13 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class OpalShowTacletOptionSuggestionsAction extends MainWindowAction {
+public class TacletOptionSuggestionsAction extends MainWindowAction {
 
     private final String BAN = "ban";
     private final String IGNORE = "ignore";
     private final String ALLOW = "allow";
 
-    public OpalShowTacletOptionSuggestionsAction(MainWindow mainWindow) {
+    public TacletOptionSuggestionsAction(MainWindow mainWindow) {
         super(mainWindow);
         init();
         setName("Taclet Option Suggestions");

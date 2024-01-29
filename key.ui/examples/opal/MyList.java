@@ -11,15 +11,15 @@ public class MyList {
     public MyList doListModifications() {
         MyList l = new MyList(10);
         l.append(new Node(1));
-        l.append(new Node(2));
-        l.append(new Node(3));
-        l.append(new Node(4));
-        // l.append(new Node(5));
-        // l.append(new Node(6));
-        // l.append(new Node(7));
-        // l.append(new Node(8));
-        // l.append(new Node(9));
-        // l.append(new Node(10));
+//        l.append(new Node(2));
+//        l.append(new Node(3));
+//        l.append(new Node(4));
+//        l.append(new Node(5));
+//        l.append(new Node(6));
+//        l.append(new Node(7));
+//        l.append(new Node(8));
+//        l.append(new Node(9));
+//        l.append(new Node(10));
         return l;
     }
 

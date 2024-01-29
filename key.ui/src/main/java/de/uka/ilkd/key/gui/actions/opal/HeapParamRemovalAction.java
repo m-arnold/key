@@ -7,8 +7,8 @@ import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class OpalMethodPuritySetUseCaseHeapParameterRemoval extends MainWindowAction {
-    public OpalMethodPuritySetUseCaseHeapParameterRemoval(MainWindow mainWindow) {
+public class HeapParamRemovalAction extends MainWindowAction {
+    public HeapParamRemovalAction(MainWindow mainWindow) {
         super(mainWindow);
         setName("Use heap parameter removal");
         setTooltip("If ticked, Method purity information are used to remove heap parameters from pure method queries");

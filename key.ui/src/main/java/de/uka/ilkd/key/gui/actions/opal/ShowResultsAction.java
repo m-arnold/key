@@ -14,9 +14,9 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class OpalShowResultsAction extends MainWindowAction {
+public class ShowResultsAction extends MainWindowAction {
 
-    public OpalShowResultsAction(MainWindow mainWindow) {
+    public ShowResultsAction(MainWindow mainWindow) {
         super(mainWindow);
         init();
         setName("Show Analyses results");

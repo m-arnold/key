@@ -17,6 +17,7 @@ import de.uka.ilkd.key.logic.label.OriginTermLabel.Origin;
 import de.uka.ilkd.key.logic.label.OriginTermLabel.SpecType;
 import de.uka.ilkd.key.logic.label.SymbolicExecutionTermLabel;
 import de.uka.ilkd.key.logic.op.*;
+import de.uka.ilkd.key.opal.FrameOptimizer;
 import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.rule.metaconstruct.ConstructorCall;
@@ -24,7 +25,6 @@ import de.uka.ilkd.key.rule.metaconstruct.CreateObject;
 import de.uka.ilkd.key.rule.metaconstruct.PostWork;
 import de.uka.ilkd.key.speclang.Contract;
 import de.uka.ilkd.key.speclang.FunctionalOperationContract;
-import de.uka.ilkd.key.opal.OpalResultProvider;
 import org.key_project.util.collection.ImmutableArray;
 import org.key_project.util.collection.ImmutableList;
 import org.key_project.util.collection.ImmutableSLList;
@@ -227,10 +227,6 @@ public class FunctionalOperationContractPO extends AbstractOperationPO implement
             ProgramVariable selfVar, ImmutableList<ProgramVariable> paramVars, Services services) {
         Term frameTerm = null;
 
-        String[] split = getContract().getTarget().toString().split("::");
-        boolean isSideEffectFree = OpalResultProvider.getINST().isSideEffectFree(split[0], split[1])
-                && StaticAnalysisSettings.useAssignableClauseReduction();
-
         for (LocationVariable heap : modHeaps) {
             final Term ft;
             if (!getContract().hasModifiesClause(heap)) {
@@ -242,9 +238,8 @@ public class FunctionalOperationContractPO extends AbstractOperationPO implement
                 }
             } else {
                 if (!getContract().hasFreeModifiesClause(heap)) {
-                    Term mod = getContract().getMod(heap, selfVar, paramVars, services);
-                    if (isSideEffectFree &&
-                            "empty".equals(mod.op().toString())) {
+                    if (StaticAnalysisSettings.useAssignableClauseOptimization()
+                            && FrameOptimizer.INST().assignableClauseRemovable(getProgramMethod())) {
                         ft = tb.tt();
                     } else {
                         ft = tb.frame(tb.var(heap), heapToAtPre,

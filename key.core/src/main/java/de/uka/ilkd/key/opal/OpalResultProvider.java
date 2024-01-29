@@ -1,15 +1,12 @@
 package de.uka.ilkd.key.opal;
 
-import de.uka.ilkd.key.logic.Term;
-import de.uka.ilkd.key.logic.TermBuilder;
-import de.uka.ilkd.key.logic.op.ProgramVariable;
 import de.uka.ilkd.key.opal.result.FieldImmutabilityResult;
 import de.uka.ilkd.key.opal.result.MethodPurityResult;
 import de.uka.ilkd.key.opal.result.ThrownExceptionsResult;
 import org.apache.commons.lang3.NotImplementedException;
-import org.key_project.util.collection.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -104,37 +101,10 @@ public class OpalResultProvider {
         thrownExceptionsResult = null;
         compileErrors = null;
         compilationFailed = false;
+        FrameOptimizer.INST().reset();
     }
 
     public boolean hasResult() {
         return fieldImmutabilityResult != null || methodPurityResult != null || thrownExceptionsResult != null;
-    }
-
-    public String getJMLAssignableExpr(String className, String methodName, List<String> paramNames) {
-        if (methodPurityResult == null) {
-            return "";
-        }
-        return methodPurityResult.getJMLAssignableExpr(className, methodName, paramNames);
-    }
-
-    public String getJMLAccessibleExpr(String className, String methodName) {
-        if (methodPurityResult == null) {
-            return "";
-        }
-        return methodPurityResult.getJMLAccessibleExpr(className, methodName);
-    }
-
-    public Term getAssignableTerm(String classname, String methodname, TermBuilder tb, ProgramVariable selfvar, ImmutableList<ProgramVariable> parameters) {
-        if (methodPurityResult == null) {
-            return tb.allLocs();
-        }
-        return methodPurityResult.getAssignableTerm(classname, methodname, tb, selfvar, parameters);
-    }
-
-    public Term getAccessibleTerm(String classname, String methodname, TermBuilder tb) {
-        if (methodPurityResult == null) {
-            return tb.allLocs();
-        }
-        return methodPurityResult.getAccessibleTerm(classname, methodname, tb);
     }
 }

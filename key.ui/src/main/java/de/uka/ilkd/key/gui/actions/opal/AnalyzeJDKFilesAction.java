@@ -7,19 +7,19 @@ import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class OpalClosedWorldAction extends MainWindowAction {
+public class AnalyzeJDKFilesAction extends MainWindowAction {
 
-    public OpalClosedWorldAction(MainWindow mainWindow) {
+    public AnalyzeJDKFilesAction(MainWindow mainWindow) {
         super(mainWindow);
-        setName("Use Closed World Assumption");
-        setTooltip("If ticked, Opal's uses closed world assumption");
-        setSelected(StaticAnalysisSettings.useCloseWorldAssumption);
+        setName("Analyze JDK Files");
+        setTooltip("If ticked, Opal's also analyzes files provided by the JDK");
+        setSelected(StaticAnalysisSettings.analyzeJDKFiles);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.useCloseWorldAssumption = b;
+        StaticAnalysisSettings.analyzeJDKFiles = b;
     }
 
 }

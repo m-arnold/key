@@ -7,19 +7,18 @@ import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class OpalFieldImmutabilityAnalysisAction extends MainWindowAction {
-
-    public OpalFieldImmutabilityAnalysisAction(MainWindow mainWindow) {
+public class MethodPurityAnalysisAction extends MainWindowAction {
+    public MethodPurityAnalysisAction(MainWindow mainWindow) {
         super(mainWindow);
-        setName("Use Immutability Analyis");
-        setTooltip("If ticked, Opal's Field Immutability Analysis is executed");
-        setSelected(StaticAnalysisSettings.useFieldImmutabilityAnalysis);
+        setName("Use Method Purity Analyis");
+        setTooltip("If ticked, Opal's Method Purity Analysis is executed");
+        setSelected(StaticAnalysisSettings.useMethodPurityAnalysis);
+        setEnabled(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean b = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-        StaticAnalysisSettings.useFieldImmutabilityAnalysis = b;
+        StaticAnalysisSettings.useMethodPurityAnalysis = b;
     }
-
 }

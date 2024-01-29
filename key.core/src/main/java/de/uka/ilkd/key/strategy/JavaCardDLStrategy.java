@@ -20,6 +20,7 @@ import de.uka.ilkd.key.logic.op.Equality;
 import de.uka.ilkd.key.logic.op.Junctor;
 import de.uka.ilkd.key.logic.op.Quantifier;
 import de.uka.ilkd.key.logic.op.SortDependingFunction;
+import de.uka.ilkd.key.opal.StaticAnalysisSettings;
 import de.uka.ilkd.key.proof.Goal;
 import de.uka.ilkd.key.proof.Proof;
 import de.uka.ilkd.key.proof.rulefilter.SetRuleFilter;
@@ -415,7 +416,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         final String queryAxProp =
             strategyProperties.getProperty(StrategyProperties.QUERYAXIOM_OPTIONS_KEY);
         switch (queryAxProp) {
-        case StrategyProperties.QUERYAXIOM_ON -> bindRuleSet(d, "query_axiom", new QueryAxiomFeature(-3000, 500));
+        case StrategyProperties.QUERYAXIOM_ON -> bindRuleSet(d, "query_axiom", new QueryAxiomFeature(StaticAnalysisSettings.queryAxiomCosts, 500));
         case StrategyProperties.QUERYAXIOM_OFF -> bindRuleSet(d, "query_axiom", inftyConst());
         default -> throw new RuntimeException("Unexpected strategy property " + queryAxProp);
         }

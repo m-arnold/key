@@ -14,7 +14,7 @@ public class StaticAnalysisSettings {
     public static AnalysisLevel fieldImmutabilityLevel = AnalysisLevel.valueOf(readFromPropertyFiles("fieldImmutabilityLevel", "L1"));
     public static boolean useMethodPurityAnalysis = Boolean.valueOf(readFromPropertyFiles("useMethodPurityAnalysis", "false"));
     public static boolean useExceptionUsageAnalysis = Boolean.valueOf(readFromPropertyFiles("useExceptionUsageAnalysis", "false"));
-    public static AnalysisLevel methodPurityLevel = AnalysisLevel.valueOf(readFromPropertyFiles("methodPurityLevel", "L1"));
+    public static AnalysisLevel methodPurityLevel = AnalysisLevel.valueOf(readFromPropertyFiles("methodPurityLevel", "L2"));
 
     public static boolean useCloseWorldAssumption = Boolean.valueOf(readFromPropertyFiles("useCloseWorldAssumption", "false"));
     public static boolean analyzeJDKFiles = Boolean.valueOf(readFromPropertyFiles("analyzeJDKFiles", "true"));
@@ -23,9 +23,16 @@ public class StaticAnalysisSettings {
     private static boolean useRevisedHeapTheory = Boolean.valueOf(readFromPropertyFiles("useRevisedHeapTheory", "true"));
 
     //Method Purity Analysis Usecases:
-    private static boolean useAssignableClauseGeneration = Boolean.valueOf(readFromPropertyFiles("useAssignableClauseGeneration", "false"));
+    private static boolean useAssignableClauseOptimization = Boolean.valueOf(readFromPropertyFiles("useAssignableClauseGeneration", "false"));
+    private static boolean useAccessibleClauseOptimization = Boolean.valueOf(readFromPropertyFiles("useAccessibleClauseOptimization", "false"));
     private static boolean useHeapParameterRemoval = Boolean.valueOf(readFromPropertyFiles("useHeapParameterRemoval", "false"));
+
+    public static long queryAxiomCosts = Long.valueOf(readFromPropertyFiles("queryAxiomCosts", "-3000"));
+
     private static boolean useAssignableClauseReduction = Boolean.valueOf(readFromPropertyFiles("useAssignableClauseReduction", "false"));
+
+    private static AssignableClauseGenerateMode assignableClauseGenerateMode = AssignableClauseGenerateMode.valueOf(readFromPropertyFiles("assignableClauseGenerateMode", "Replace"));
+    private static Boolean trustOpal = Boolean.valueOf(readFromPropertyFiles("trustOpal", "true"));
 
     private static String readFromPropertyFiles(String propKeY, String defaultValue) {
         try {
@@ -54,8 +61,12 @@ public class StaticAnalysisSettings {
         return useFieldImmutabilityAnalysis || useMethodPurityAnalysis || useExceptionUsageAnalysis; // | ... Add new analyses here...
     }
 
-    public static boolean useAssignableClauseGeneration() {
-        return useMethodPurityAnalysis && useAssignableClauseGeneration;
+    public static boolean useAssignableClauseOptimization() {
+        return useMethodPurityAnalysis && useAssignableClauseOptimization;
+    }
+
+    public static boolean useAccessibleClauseOptimization() {
+        return useMethodPurityAnalysis && useAccessibleClauseOptimization;
     }
 
     public static boolean useHeapParameterRemoval() {
@@ -66,15 +77,40 @@ public class StaticAnalysisSettings {
         return useMethodPurityAnalysis && useAssignableClauseReduction;
     }
 
-    // TODO: Refactor this! useAssignableClauseReduction() includes useMethodPurityAnalysis, this method does not!
-    // Unintuitive!
-    public static void setUseAssignableClauseReduction(boolean b) {
-        useAssignableClauseGeneration = b;
+    public static AssignableClauseGenerateMode getAssignableGenerationMode() {
+        return assignableClauseGenerateMode;
     }
 
-    public static void setUseAssignableClauseGeneration(boolean b) {
-        useAssignableClauseGeneration = b;
+    public static boolean isModeReplace() {
+        return assignableClauseGenerateMode == AssignableClauseGenerateMode.Replace;
     }
+
+    public static boolean isModeIntersect() {
+        return assignableClauseGenerateMode == AssignableClauseGenerateMode.Intersect;
+    }
+
+    public static void setAssignableGenerationMode(AssignableClauseGenerateMode mode) {
+        assignableClauseGenerateMode = mode;
+    }
+
+    public static void setTrustOpal(boolean b) {
+        trustOpal = b;
+    }
+
+    public static boolean trustOpal() {
+        return trustOpal;
+    }
+
+    // TODO: Refactor this! useAssignableClauseReduction() includes useMethodPurityAnalysis, this method does not!
+    // Unintuitive!
+    public static void setUseAssignableClauseOptimization(boolean b) {
+        useAssignableClauseOptimization = b;
+    }
+
+    public static void setUseAssignableOptimization(boolean b) {
+        useAssignableClauseOptimization = b;
+    }
+    public static void setUseAccessibleClauseOptimization(boolean b) {useAssignableClauseOptimization = b; }
 
     public static void setUseHeapParameterRemoval(boolean b) {
         useHeapParameterRemoval = b;
@@ -82,5 +118,10 @@ public class StaticAnalysisSettings {
 
     public static boolean useRevisedHeapTheory() {
         return useFieldImmutabilityAnalysis && useRevisedHeapTheory;
+    }
+
+    public enum AssignableClauseGenerateMode {
+        Replace,
+        Intersect,
     }
 }
