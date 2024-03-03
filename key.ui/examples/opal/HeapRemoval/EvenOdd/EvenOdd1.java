@@ -1,4 +1,4 @@
-class EvenOdd {
+class EvenOdd1 {
     //@ invariant isEven(arr[0]);
     int[] arr; int x;
 
