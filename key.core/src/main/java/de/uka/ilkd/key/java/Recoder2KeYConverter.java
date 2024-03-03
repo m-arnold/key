@@ -1183,8 +1183,9 @@ public class Recoder2KeYConverter {
                     returnType == null ? KeYJavaType.VOID_TYPE : getKeYJavaType(returnType);
 
             if (StaticAnalysisSettings.useHeapParameterRemoval()) {
-                boolean isPure = OpalResultProvider.getINST().isPureMethod(containerType.getSort().toString(), methDecl.getName());
-                int heapCount = isPure ? 0 : (heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
+                boolean isOpalPure = OpalResultProvider.getINST().isPureMethod(containerType.getSort().toString(), methDecl.getName());
+                boolean removeHeapParam = isOpalPure && (isPrimitiveOrVoid(methDecl.getTypeReference()) || methDecl.getJmlModifiers().strictlyPure());
+                int heapCount = removeHeapParam ? 0 : (heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
                 result = new ProgramMethod(methDecl, containerType, returnKJT, positionInfo(md),
                         heapSort, heapLDT == null ? 1 : heapCount);
             } else {
@@ -1196,6 +1197,15 @@ public class Recoder2KeYConverter {
         methodsDeclaring.remove(md);
         result = (IProgramMethod) getMapping().toKeY(md);
         return result;
+    }
+
+    private boolean isPrimitiveOrVoid(TypeReference ref) {
+        // If null, then return type is void
+        if (ref == null) {
+            return true;
+        }
+        String s = ref.getName();
+        return s.equals("int") || s.equals("boolean") || s.equals("float") || s.equals("double");
     }
 
     /**
