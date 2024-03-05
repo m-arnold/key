@@ -524,7 +524,9 @@ public final class JMLSpecExtractor implements SpecExtractor {
     private ImmutableList<TextualJMLConstruct> addOpalClauses(ImmutableList<TextualJMLConstruct> constructs, IProgramMethod pm) {
         List<String> paramNames = new ArrayList<>();
         for (ParameterDeclaration decl: pm.getParameters()) {
-            paramNames.add(decl.getVariables().get(0).getName());
+            if (!isPrimitive(decl.getTypeReference().getName())) {
+                paramNames.add(decl.getVariables().get(0).getName());
+            }
         }
 
         FrameOptimizer optimizer = FrameOptimizer.INST();
@@ -564,6 +566,16 @@ public final class JMLSpecExtractor implements SpecExtractor {
             }
         }
         return constructs;
+    }
+
+    private boolean isPrimitive(String type) {
+        return "int".equals(type)
+                || "float".equals(type)
+                || "double".equals(type)
+                || "boolean".equals(type)
+                || "char".equals(type)
+                || "byte".equals(type)
+                || "short".equals(type);
     }
 
     @Override

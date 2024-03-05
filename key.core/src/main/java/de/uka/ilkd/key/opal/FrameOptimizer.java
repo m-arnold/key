@@ -99,13 +99,26 @@ public class FrameOptimizer {
                 case ContextuallySideEffectFree:
                     Term res = tb.allFields(tb.var(selfvar));
                     for (ProgramVariable var: parameters) {
-                        res = tb.union(res,tb.allFields(tb.var(var)));
+                        if (!isPrimitive(var.sort().toString())) {
+                            res = tb.union(res,tb.allFields(tb.var(var)));
+                        }
                     }
                     return res;
             }
         }
         return tb.allLocs();
     }
+
+    private boolean isPrimitive(String type) {
+        return "int".equals(type)
+                || "float".equals(type)
+                || "double".equals(type)
+                || "boolean".equals(type)
+                || "char".equals(type)
+                || "byte".equals(type)
+                || "short".equals(type);
+    }
+
 
     public Term getAccessibleTerm(String classname, String methodname, TermBuilder tb) {
         MethodPurityResult result = resProvider.getMethodPurityResult();
