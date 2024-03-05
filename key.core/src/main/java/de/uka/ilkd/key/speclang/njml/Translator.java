@@ -2009,7 +2009,9 @@ class Translator extends JmlParserBaseVisitor<Object> {
             t = termFactory.assignable(storeRef);
         }
         if (StaticAnalysisSettings.useAssignableClauseOptimization()
-                && !ctx.ASSIGNABLE().getText().equals("assignable_free") && !t.equals(tb.ff())) {
+                && !ctx.ASSIGNABLE().getText().equals("assignable_free")
+                && !(ctx.parent instanceof JmlParser.Loop_specificationContext) // Do not modify assignable within LoopSpec!
+                && !t.equals(tb.ff())) {
             t = FrameOptimizer.INST().optimizeAssignable(t, services, this.method, tb, selfVar, paramVars);
         }
         for (LocationVariable heap : heaps) {
