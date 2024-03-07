@@ -533,7 +533,7 @@ public final class JMLSpecExtractor implements SpecExtractor {
         final String assignableExpr = StaticAnalysisSettings.useAssignableClauseOptimization() ?
                 optimizer.getJMLAssignableExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames) : "";
         final String accessibleExpr = StaticAnalysisSettings.useAccessibleClauseOptimization() ?
-                optimizer.getJMLAccessibleExpr(pm.getContainerType().getSort().toString(), pm.getName()) : "";
+                optimizer.getJMLAccessibleExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames) : "";
 
         // Is Empty if no usecase is selected or if the method is not even contextually sideeffect free, no useful assignable or accessible can be added
         if (assignableExpr.isEmpty() && accessibleExpr.isEmpty()) {

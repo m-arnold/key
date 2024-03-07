@@ -1988,7 +1988,7 @@ class Translator extends JmlParserBaseVisitor<Object> {
         final Term term = requireNonNull(accept(ctx.storeRefUnion()));
         Term t = termFactory.accessible(term);
         if (StaticAnalysisSettings.useAccessibleClauseOptimization() && !t.equals(tb.ff())) {
-                t = FrameOptimizer.INST().optimizeAccessible(t, method, tb);
+                t = FrameOptimizer.INST().optimizeAccessible(t, method, tb, paramVars);
         }
         LocationVariable[] heaps = visitTargetHeap(ctx.targetHeap());
         for (LocationVariable heap : heaps) {

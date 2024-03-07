@@ -59,7 +59,7 @@ public class FrameOptimizer {
         return "";
     }
 
-    public String getJMLAccessibleExpr(String className, String methodName) {
+    public String getJMLAccessibleExpr(String className, String methodName, List<String> paramNames) {
         MethodPurityResult result = resProvider.getMethodPurityResult();
         if (result == null) {
             return "";
@@ -74,7 +74,11 @@ public class FrameOptimizer {
                 case DPure:
                 case DExternallyPure:
                 case DContextuallyPure:
-                    return "\\nothing";
+                    String res = "\\nothing";
+                    for (String parameterName: paramNames) {
+                        res = "\\set_union(" + res + "," + parameterName + ".*)";
+                    }
+                    return res;
             }
         }
         return "";
@@ -120,7 +124,7 @@ public class FrameOptimizer {
     }
 
 
-    public Term getAccessibleTerm(String classname, String methodname, TermBuilder tb) {
+    public Term getAccessibleTerm(String classname, String methodname, TermBuilder tb, ImmutableList<ProgramVariable> paramVars) {
         MethodPurityResult result = resProvider.getMethodPurityResult();
         if (result == null) {
             return tb.allLocs();
@@ -135,7 +139,13 @@ public class FrameOptimizer {
                 case DPure:
                 case DExternallyPure:
                 case DContextuallyPure:
-                    return tb.empty();
+                    Term res = tb.empty();
+                    for (ProgramVariable var: paramVars) {
+                        if (!isPrimitive(var.sort().toString())) {
+                            res = tb.union(res,tb.allFields(tb.var(var)));
+                        }
+                    }
+                    return res;
             }
         }
         return tb.allLocs();
@@ -143,21 +153,26 @@ public class FrameOptimizer {
 
     public Term optimizeAssignable(Term userAssignable, Services services, IProgramMethod method, TermBuilder tb, ProgramVariable selfVar, ImmutableList<ProgramVariable> paramVars) {
         Term opalAssignable = getAssignableTerm(method.getContainerType().getName(), method.getName(), tb, selfVar, paramVars);
-        determineProofNeeded(services, method, opalAssignable, userAssignable);
+        determineProofNeeded(services, method, tb, opalAssignable, userAssignable);
         switch (StaticAnalysisSettings.getAssignableGenerationMode()) {
             case Intersect:
                 return tb.intersect(userAssignable, opalAssignable);
             default:
+                /* Todo: Mit Richard besprechen....
+                if (opalAssignable.equals(tb.allLocs())) {
+                    return userAssignable;
+                }*/
                 return opalAssignable;
         }
     }
 
-    public Term optimizeAccessible(Term userAccessible, IProgramMethod method, TermBuilder tb) {
-        return tb.intersect(userAccessible, getAccessibleTerm(method.getContainerType().getName(), method.getName(), tb));
+    public Term optimizeAccessible(Term userAccessible, IProgramMethod method, TermBuilder tb, ImmutableList<ProgramVariable> paramVars) {
+        return tb.intersect(userAccessible, getAccessibleTerm(method.getContainerType().getName(), method.getName(), tb, paramVars));
     }
 
-    private void determineProofNeeded(Services services, IProgramMethod method, Term opalAssignable, Term userAssignable) {
-        if (StaticAnalysisSettings.isModeIntersect() && !isSubset(services, opalAssignable, userAssignable)) {
+    private void determineProofNeeded(Services services, IProgramMethod method, TermBuilder tb, Term opalAssignable, Term userAssignable) {
+        if ((StaticAnalysisSettings.isModeIntersect() && !isSubset(services, opalAssignable, userAssignable))
+            /*|| (StaticAnalysisSettings.isModeReplace() && opalAssignable.equals(tb.allLocs()))*/) { // ToDo: Mit Richard besprechen.
             needsProof.add(method);
         }
     }
