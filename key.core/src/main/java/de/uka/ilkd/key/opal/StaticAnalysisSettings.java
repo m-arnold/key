@@ -23,7 +23,7 @@ public class StaticAnalysisSettings {
     private static boolean useRevisedHeapTheory = Boolean.valueOf(readFromPropertyFiles("useRevisedHeapTheory", "true"));
 
     //Method Purity Analysis Usecases:
-    private static boolean useAssignableClauseOptimization = Boolean.valueOf(readFromPropertyFiles("useAssignableClauseGeneration", "false"));
+    private static boolean useAssignableClauseOptimization = Boolean.valueOf(readFromPropertyFiles("useAssignableClauseOptimization", "false"));
     private static boolean useAccessibleClauseOptimization = Boolean.valueOf(readFromPropertyFiles("useAccessibleClauseOptimization", "false"));
     private static boolean useHeapParameterRemoval = Boolean.valueOf(readFromPropertyFiles("useHeapParameterRemoval", "false"));
 
@@ -110,7 +110,7 @@ public class StaticAnalysisSettings {
     public static void setUseAssignableOptimization(boolean b) {
         useAssignableClauseOptimization = b;
     }
-    public static void setUseAccessibleClauseOptimization(boolean b) {useAssignableClauseOptimization = b; }
+    public static void setUseAccessibleClauseOptimization(boolean b) {useAccessibleClauseOptimization = b; }
 
     public static void setUseHeapParameterRemoval(boolean b) {
         useHeapParameterRemoval = b;
