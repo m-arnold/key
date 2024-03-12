@@ -171,7 +171,8 @@ public class FrameOptimizer {
     }
 
     private void determineProofNeeded(Services services, IProgramMethod method, TermBuilder tb, Term opalAssignable, Term userAssignable) {
-        if ((StaticAnalysisSettings.isModeIntersect() && !isSubset(services, opalAssignable, userAssignable))
+        if ((StaticAnalysisSettings.isModeIntersect() && !isSubset(services, tb, opalAssignable, userAssignable))
+                || !StaticAnalysisSettings.trustOpal()
             /*|| (StaticAnalysisSettings.isModeReplace() && opalAssignable.equals(tb.allLocs()))*/) { // ToDo: Mit Richard besprechen.
             needsProof.add(method);
         }
@@ -181,18 +182,18 @@ public class FrameOptimizer {
         return StaticAnalysisSettings.trustOpal() && !needsProof.contains(method);
     }
 
-    private boolean isSubset(Services services, Term opalAssignable, Term userAssignable) {
+    private boolean isSubset(Services services, TermBuilder tb, Term opalAssignable, Term userAssignable) {
         final LocSetLDT ldt = services.getTypeConverter().getLocSetLDT();
+
         if (opalAssignable == null || userAssignable == null) {
             return false;
         }
-        // ToDo: Make this smarter!
-        if ( userAssignable.op() == ldt.getAllLocs() ||
-                opalAssignable.op() == ldt.getEmpty()) {
-            return true;
-        }
 
-        return false;
+        // This could be done more accurately, but is sufficient for the assignable
+        // clauses we generated based on OPIUM's results
+        return userAssignable.op() == ldt.getAllLocs()                                                      // No specified assignable clause (implicit everything)
+                || userAssignable.equals(tb.setMinus(tb.allLocs(), tb.freshLocs(tb.getBaseHeap())))         // User specified \everything
+                || opalAssignable.op() == ldt.getEmpty();                                                   // Opal determined \nothing;
     }
 
 }
