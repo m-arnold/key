@@ -38,4 +38,38 @@ public class MethodPurityResult {
     public MethodPurityLevel getMethodPurity(String className, String methodName) {
         return result.get(new Pair<>(className, methodName));
     }
+
+    // Wahrscheinlich muss ich die anderen beiden Hilfsmethoden auch noch so machen...
+    public boolean containsPureMethod() {
+        /*for (Pair<String, String> key : result.keySet()) {
+            if (key.first.equals(className)) {
+                MethodPurityLevel l  = result.get(key);
+                if (l.equals(Pure) || l.equals(CompileTimePure)) {
+                    return true;
+                }
+            }
+        }
+        return false;*/
+        return result.values().contains(Pure)
+                || result.values().contains(CompileTimePure);
+    }
+
+    public boolean containsAtLeastContextPure() {
+        return result.values().contains(Pure)
+                || result.values().contains(CompileTimePure)
+                || result.values().contains(ExternallyPure)
+                || result.values().contains(ContextuallyPure)
+                || result.values().contains(DExternallyPure)
+                || result.values().contains(DContextuallyPure);
+    }
+
+    public boolean containsAtLeastContextSideeffectFree() {
+        return result.values().contains(Pure)
+                || result.values().contains(CompileTimePure)
+                || result.values().contains(SideEffectFree)
+                || result.values().contains(ExternallyPure)
+                || result.values().contains(ExternallySideEffectFree)
+                || result.values().contains(ContextuallyPure)
+                || result.values().contains(ContextuallySideEffectFree);
+    }
 }

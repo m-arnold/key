@@ -21,4 +21,8 @@ public class FieldImmutabilityResult {
         FieldImmutabilityLevel level = result.get(new Pair<>(className, fieldName));
         return (level != null && level == TransitivelyImmutableField);
     }
+
+    public boolean hasUseableResult() {
+        return result.values().contains(TransitivelyImmutableField);
+    }
 }

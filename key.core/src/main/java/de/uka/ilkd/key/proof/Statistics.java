@@ -10,6 +10,7 @@ import java.util.List;
 
 import de.uka.ilkd.key.informationflow.proof.InfFlowProof;
 import de.uka.ilkd.key.informationflow.proof.SideProofStatistics;
+import de.uka.ilkd.key.opal.OpalResultProvider;
 import de.uka.ilkd.key.proof.reference.ClosedBy;
 import de.uka.ilkd.key.rule.*;
 import de.uka.ilkd.key.rule.OneStepSimplifier.Protocol;
@@ -44,6 +45,8 @@ public class Statistics {
     public final long timeInMillis;
     public final float timePerStepInMillis;
 
+    public int useableOpalResults = -1;
+
     private final List<Pair<String, String>> summaryList = new ArrayList<>(14);
 
     private final HashMap<String, Integer> interactiveAppsDetails = new HashMap<>();
@@ -71,6 +74,7 @@ public class Statistics {
         this.autoModeTimeInMillis = autoModeTimeInMillis;
         this.timeInMillis = timeInMillis;
         this.timePerStepInMillis = timePerStepInMillis;
+        //this.useableOpalResults = Long.valueOf(OpalResultProvider.getINST().hasUsableResult(node.proof().name().toString().split("\\[")[0]));
     }
 
     public Statistics(List<Node> startNodes) {
@@ -141,6 +145,8 @@ public class Statistics {
         this.autoModeTimeInMillis = autoModeTimeInMillis;
         this.timeInMillis = timeInMillis;
         this.timePerStepInMillis = nodes <= 1 ? .0f : (autoModeTimeInMillis / (float) (nodes - 1));
+        //this.useableOpalResults = Integer.valueOf(Integer.valueOf(OpalResultProvider.getINST().hasUsableResult(startNodes.get(0).proof().name().toString().split("\\[")[0])));
+        this.useableOpalResults = Integer.valueOf(Integer.valueOf(OpalResultProvider.getINST().hasUsableResult()));
 
         generateSummary(startNodes.get(0).proof());
     }
@@ -173,7 +179,8 @@ public class Statistics {
         this.autoModeTimeInMillis = startNode.proof().getAutoModeTime();
         this.timeInMillis = (System.currentTimeMillis() - startNode.proof().creationTime);
         timePerStepInMillis = nodes <= 1 ? .0f : (autoModeTimeInMillis / (float) (nodes - 1));
-
+        //this.useableOpalResults = Integer.valueOf(OpalResultProvider.getINST().hasUsableResult(startNode.proof().name().toString().split("\\[")[0]));
+        this.useableOpalResults = Integer.valueOf(OpalResultProvider.getINST().hasUsableResult());
         generateSummary(startNode.proof());
     }
 
@@ -251,6 +258,7 @@ public class Statistics {
         summaryList.add(new Pair<>("Merge Rule apps", String.valueOf(stat.mergeRuleApps)));
         summaryList.add(new Pair<>("Total rule apps",
             EnhancedStringBuffer.format(stat.totalRuleApps).toString()));
+        //summaryList.add(new Pair<>("Usable Opal results", OpalResultProvider.getINST().hasUsableResult(node.proof().name().toString().split("\\[")[0])));
     }
 
 
@@ -299,6 +307,8 @@ public class Statistics {
         int block = 0; // block and loop contract apps
         int inv = 0; // loop invariants
 
+        //int usableOpalResult = -1;
+
         /**
          * Increment numbers of rule applications according to given node and (already collected)
          * interactive rule applications
@@ -309,11 +319,14 @@ public class Statistics {
         private void changeOnNode(final Node node,
                 final HashMap<String, Integer> interactiveAppsDetails) {
             nodes++;
-
             branches += childBranches(node);
             cachedBranches += cachedBranches(node);
             interactive += interactiveRuleApps(node, interactiveAppsDetails);
             symbExApps += NodeInfo.isSymbolicExecutionRuleApplied(node) ? 1 : 0;
+
+            //if (usableOpalResult == -1) {
+            //    usableOpalResult = Integer.valueOf(OpalResultProvider.getINST().hasUsableResult(node.proof().name().toString().split("\\[")[0]));
+            //}
 
             final RuleApp ruleApp = node.getAppliedRuleApp();
             if (ruleApp != null) {

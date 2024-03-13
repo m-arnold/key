@@ -122,6 +122,12 @@ public class StatisticsFile implements Serializable {
             return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024;
         }
 
+    }, new LongColumn("Usable Opal Result") {
+
+        @Override
+        long getLongValueFromStatistics(Statistics statistics) {
+            return statistics.useableOpalResults;
+        }
     } };
 
     public StatisticsFile(File location) {

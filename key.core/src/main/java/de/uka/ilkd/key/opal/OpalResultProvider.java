@@ -6,7 +6,6 @@ import de.uka.ilkd.key.opal.result.ThrownExceptionsResult;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -106,5 +105,26 @@ public class OpalResultProvider {
 
     public boolean hasResult() {
         return fieldImmutabilityResult != null || methodPurityResult != null || thrownExceptionsResult != null;
+    }
+
+    public String hasUsableResult() {
+        if (StaticAnalysisSettings.useRevisedHeapTheory()){
+            if (fieldImmutabilityResult == null) {
+                return "0";
+            }
+            if (fieldImmutabilityResult.hasUseableResult()) {
+                return "1";
+            }
+        } else {
+            if (methodPurityResult == null) {
+                return "0";
+            }
+            if ((StaticAnalysisSettings.useHeapParameterRemoval() && methodPurityResult.containsPureMethod()) ||
+                    (StaticAnalysisSettings.useAssignableClauseOptimization() && methodPurityResult.containsAtLeastContextSideeffectFree()) ||
+                    (StaticAnalysisSettings.useAccessibleClauseOptimization() && methodPurityResult.containsAtLeastContextPure()) ){
+                return "1";
+            }
+        }
+        return "0";
     }
 }
