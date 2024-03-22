@@ -178,6 +178,10 @@ public class FrameOptimizer {
         }
     }
 
+    public void addAssignableNeedsProof(IProgramMethod method) {
+        needsProof.add(method);
+    }
+
     public boolean assignableClauseRemovable(IProgramMethod method) {
         return StaticAnalysisSettings.trustOpal() && !needsProof.contains(method);
     }

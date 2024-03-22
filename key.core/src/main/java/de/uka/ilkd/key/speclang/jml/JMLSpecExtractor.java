@@ -530,15 +530,34 @@ public final class JMLSpecExtractor implements SpecExtractor {
         }
 
         FrameOptimizer optimizer = FrameOptimizer.INST();
-        final String assignableExpr = StaticAnalysisSettings.useAssignableClauseOptimization() ?
+        String assignableExpr = StaticAnalysisSettings.useAssignableClauseOptimization() ?
                 optimizer.getJMLAssignableExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames) : "";
         final String accessibleExpr = StaticAnalysisSettings.useAccessibleClauseOptimization() ?
                 optimizer.getJMLAccessibleExpr(pm.getContainerType().getSort().toString(), pm.getName(), paramNames) : "";
 
-        // Is Empty if no usecase is selected or if the method is not even contextually sideeffect free, no useful assignable or accessible can be added
+        // Is empty if no usecase is selected or if the method is not even contextually sideeffect free, no useful assignable or accessible can be added
+        // Assignable clause cannot be removed later on.
         if (assignableExpr.isEmpty() && accessibleExpr.isEmpty()) {
+            optimizer.addAssignableNeedsProof(pm);
             return constructs;
         }
+
+        // If the keyword "strictly_pure" is used to specify an assignable clause, we cannot optimize the assignable clause.
+        // Mark the method, such that the assignable clause is not removed later on and do not add further assignable clauses.
+        if (pm.getMethodDeclaration().getJmlModifiers().strictlyPure()) {
+            optimizer.addAssignableNeedsProof(pm);
+            assignableExpr = "";
+        }
+
+        // If the keyword "pure" is used to specify an assignable clause, we do not add further assignable clause. We check,
+        // whether the generated assignable clause is \nothing, in that case we can remove the assignable clause later on.
+        if (pm.getMethodDeclaration().getJmlModifiers().pure()) {
+            if (!"\\nothing".equals(assignableExpr)) {
+                optimizer.addAssignableNeedsProof(pm);
+            }
+            assignableExpr = "";
+        }
+
         // No existing TextualJMLSpecCase behaviour
         // constructs.isEmpty() is not enough: E.g. the specification of an \\@ invariant right before a method is contained here.
         if (constructs.stream().filter(c -> c instanceof TextualJMLSpecCase).findAny().isEmpty()) {
